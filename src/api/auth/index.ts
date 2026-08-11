@@ -1,9 +1,8 @@
 import type { AuthService } from '../../types/auth'
-import { mockAuthService } from './mockAuthService'
+import { apiAuthService } from './apiAuthService'
 
 /**
- * Único ponto de troca do provedor de autenticação: quando existir uma API
- * real, crie um apiAuthService.ts implementando AuthService e troque a linha
- * abaixo — nenhum outro arquivo (AuthContext, LoginPage) precisa mudar.
+ * Único ponto de troca do provedor de autenticação: nenhum outro arquivo
+ * (AuthContext, LoginPage) precisa mudar ao alternar a implementação aqui.
  */
-export const authService: AuthService = mockAuthService
+export const authService: AuthService = apiAuthService

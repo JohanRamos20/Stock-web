@@ -10,11 +10,9 @@ export function HomePage() {
 
   return (
     <div className="p-14 max-w-[480px]">
-      <Kicker>{user.role === 'admin' ? 'Administrador do almoxarifado' : 'Servidor requisitante'}</Kicker>
-      <h2>Bem-vindo, {user.nome.split(' ')[0]}</h2>
-      <p className="text-muted text-sm">
-        {user.cargo ?? user.setor} · Matrícula {user.matricula}
-      </p>
+      <Kicker>{user.role.toUpperCase() === 'ADMIN' ? 'Administrador do almoxarifado' : 'Servidor requisitante'}</Kicker>
+      <h2>Bem-vindo, {user.name.split(' ')[0]}</h2>
+      <p className="text-muted text-sm">{user.sector}</p>
       <Divider />
       <Button type="button" variant="secondary" onClick={() => void logout()}>
         Sair

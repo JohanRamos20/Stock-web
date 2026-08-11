@@ -1,13 +1,13 @@
 export type Role = 'servidor' | 'admin'
 
+export type Sector = 'ADMINISTRATIVE' | 'ACADEMICS'
+
 export interface User {
   id: string
-  nome: string
-  matricula: string
+  name: string
   email: string
-  setor: string
-  cargo?: string
-  role: Role
+  sector: string
+  role: string
 }
 
 export interface Session {

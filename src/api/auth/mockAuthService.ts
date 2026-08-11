@@ -13,13 +13,11 @@ async function login(credentials: LoginCredentials): Promise<Session> {
 
   const identifier = credentials.identifier.trim()
   const account = mockUsers.find(
-    (candidate) =>
-      candidate.matricula === identifier ||
-      candidate.email.toLowerCase() === identifier.toLowerCase(),
+    (candidate) => candidate.email.toLowerCase() === identifier.toLowerCase(),
   )
 
   if (!account || account.password !== credentials.password) {
-    throw new Error('Matrícula/e-mail ou senha inválidos.')
+    throw new Error('E-mail ou senha inválidos.')
   }
 
   if (account.role !== credentials.role) {
@@ -28,11 +26,9 @@ async function login(credentials: LoginCredentials): Promise<Session> {
 
   const user: User = {
     id: account.id,
-    nome: account.nome,
-    matricula: account.matricula,
+    name: account.name,
     email: account.email,
-    setor: account.setor,
-    cargo: account.cargo,
+    sector: account.sector,
     role: account.role,
   }
 
