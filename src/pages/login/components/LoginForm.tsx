@@ -6,7 +6,12 @@ import { Field } from '../../../components/ui/Field'
 import { Kicker } from '../../../components/ui/Kicker'
 import { useLoginForm } from '../useLoginForm'
 
-export function LoginForm() {
+interface LoginFormProps {
+  successMessage?: string | null
+  onForgotPassword: () => void
+}
+
+export function LoginForm({ successMessage, onForgotPassword }: LoginFormProps) {
   const {
     identifier,
     setIdentifier,
@@ -25,6 +30,7 @@ export function LoginForm() {
       <h2 className="mb-1">Entrar no sistema</h2>
       <p className="text-muted text-sm mb-6">Use suas credenciais institucionais.</p>
 
+      {successMessage && <Alert>{successMessage}</Alert>}
       {error && <Alert>{error}</Alert>}
 
       <Field
@@ -54,7 +60,14 @@ export function LoginForm() {
           onChange={setKeepConnected}
           label="Manter conectado"
         />
-        <a href="#esqueci-senha" className="text-[13px]" onClick={(event) => event.preventDefault()}>
+        <a
+          href="#esqueci-senha"
+          className="text-[13px]"
+          onClick={(event) => {
+            event.preventDefault()
+            onForgotPassword()
+          }}
+        >
           Recuperar senha
         </a>
       </div>
