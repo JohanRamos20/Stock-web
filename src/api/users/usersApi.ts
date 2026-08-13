@@ -16,8 +16,9 @@ interface CreateUserPayload {
 
 interface ResetPasswordPayload {
   email: string
-  code: string
+  currentPassword: string
   newPassword: string
+  confirmNewPassword: string
 }
 
 interface ApiSession {
