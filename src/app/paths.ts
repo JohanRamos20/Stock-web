@@ -1,4 +1,10 @@
 export const ROUTES = {
   login: '/login',
-  home: '/',
+  root: '/',
+  dashboard: '/dashboard',
+  estoque: '/estoque',
+  solicitacoes: '/solicitacoes',
+  servidores: '/servidores',
+  materiais: '/materiais',
+  minhasSolicitacoes: '/minhas-solicitacoes',
 } as const
