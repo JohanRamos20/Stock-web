@@ -33,7 +33,7 @@ export function useLoginForm() {
     try {
       await login({ identifier, password, role, keepConnected })
       const state = location.state as LocationState | null
-      const destination = state?.from?.pathname ?? ROUTES.home
+      const destination = state?.from?.pathname ?? ROUTES.root
       navigate(destination, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Não foi possível entrar. Tente novamente.')
