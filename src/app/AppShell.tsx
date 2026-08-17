@@ -2,12 +2,14 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 import { Tag } from '../components/ui/Tag'
 import { useAuth } from '../data/auth/AuthContext'
+import { useCart } from '../data/cart/CartContext'
 import { getRoleLabel, isAdminRole } from '../lib/auth/role'
 import { ROUTES } from './paths'
 import { ROUTE_ROLES } from './routeAccess'
 
 const NAV_ITEMS = [
   { label: 'Solicitação de Materiais', to: ROUTES.materiais },
+  { label: 'Solicitação', to: ROUTES.carrinho },
   { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes },
   { label: 'Dashboard', to: ROUTES.dashboard },
   { label: 'Estoque', to: ROUTES.estoque },
@@ -17,6 +19,7 @@ const NAV_ITEMS = [
 
 export function AppShell() {
   const { user, logout } = useAuth()
+  const { count: cartCount } = useCart()
   const location = useLocation()
 
   if (!user) return null
@@ -50,6 +53,7 @@ export function AppShell() {
               }
             >
               {item.label}
+              {item.to === ROUTES.carrinho && cartCount > 0 && <Tag>{cartCount}</Tag>}
             </NavLink>
           ))}
         </nav>
