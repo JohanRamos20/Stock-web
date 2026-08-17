@@ -111,8 +111,8 @@ export function useSolicitacoesPage() {
     setPdfNotice(null)
     setGeneratingPdfId(id)
     try {
-      const { blob, fileName } = await withdrawalTermApi.generateWithdrawalTerm(id, token)
-      downloadBlob(blob, fileName)
+      const { blob } = await withdrawalTermApi.generateWithdrawalTerm(id, token)
+      downloadBlob(blob, `termo_retirada_${id}.pdf`)
       setPdfDone((prev) => ({ ...prev, [id]: true }))
     } catch (error) {
       setPdfNotice(errorMessage(error, 'Não foi possível gerar o termo de retirada.'))
