@@ -1,0 +1,24 @@
+interface RequestsKpisProps {
+  registered: number
+  unitsMoved: number
+  requesters: number
+}
+
+export function RequestsKpis({ registered, unitsMoved, requesters }: RequestsKpisProps) {
+  const items = [
+    { label: 'Solicitações registradas', value: registered },
+    { label: 'Unidades movimentadas', value: unitsMoved },
+    { label: 'Servidores requisitantes', value: requesters },
+  ]
+
+  return (
+    <div className="grid grid-cols-3 gap-[2px] bg-divider border-y-2 border-divider mb-5">
+      {items.map((item) => (
+        <div key={item.label} className="bg-white p-5">
+          <div className="text-[11px] tracking-[0.1em] uppercase text-muted mb-1">{item.label}</div>
+          <div className="font-heading font-extrabold text-[32px] leading-none">{item.value}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
