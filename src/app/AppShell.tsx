@@ -4,14 +4,15 @@ import { Tag } from '../components/ui/Tag'
 import { useAuth } from '../data/auth/AuthContext'
 import { getRoleLabel, isAdminRole } from '../lib/auth/role'
 import { ROUTES } from './paths'
+import { ROUTE_ROLES } from './routeAccess'
 
 const NAV_ITEMS = [
-  { label: 'Solicitação de Materiais', to: ROUTES.materiais, role: 'servidor' },
-  { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes, role: 'servidor' },
-  { label: 'Dashboard', to: ROUTES.dashboard, role: 'admin' },
-  { label: 'Estoque', to: ROUTES.estoque, role: 'admin' },
-  { label: 'Solicitações', to: ROUTES.solicitacoes, role: 'admin' },
-  { label: 'Registro de Servidores', to: ROUTES.servidores, role: 'admin' },
+  { label: 'Solicitação de Materiais', to: ROUTES.materiais },
+  { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes },
+  { label: 'Dashboard', to: ROUTES.dashboard },
+  { label: 'Estoque', to: ROUTES.estoque },
+  { label: 'Solicitações', to: ROUTES.solicitacoes },
+  { label: 'Registro de Servidores', to: ROUTES.servidores },
 ] as const
 
 export function AppShell() {
@@ -21,7 +22,7 @@ export function AppShell() {
   if (!user) return null
 
   const admin = isAdminRole(user.role)
-  const navItems = NAV_ITEMS.filter((item) => item.role === (admin ? 'admin' : 'servidor'))
+  const navItems = NAV_ITEMS.filter((item) => ROUTE_ROLES[item.to] === (admin ? 'admin' : 'servidor'))
   const pageTitle = NAV_ITEMS.find((item) => item.to === location.pathname)?.label ?? ''
 
   return (
