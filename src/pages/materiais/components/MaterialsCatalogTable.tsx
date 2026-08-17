@@ -3,12 +3,17 @@ import { CATEGORY_LABELS, UNIT_TYPE_LABELS, type Material } from '../../../types
 
 interface MaterialsCatalogTableProps {
   materials: Material[]
+  isLoading: boolean
   qty: Record<string, string>
   onQtyChange: (materialId: string, value: string) => void
   onAdd: (material: Material) => void
 }
 
-export function MaterialsCatalogTable({ materials, qty, onQtyChange, onAdd }: MaterialsCatalogTableProps) {
+export function MaterialsCatalogTable({ materials, isLoading, qty, onQtyChange, onAdd }: MaterialsCatalogTableProps) {
+  if (isLoading) {
+    return <p className="text-muted text-sm px-2 py-6">Carregando materiais…</p>
+  }
+
   if (materials.length === 0) {
     return <p className="text-muted text-sm px-2 py-6">Nenhum material corresponde à busca.</p>
   }

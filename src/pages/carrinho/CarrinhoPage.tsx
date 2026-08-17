@@ -14,6 +14,8 @@ export function CarrinhoPage() {
     confirm,
     sent,
     sentMessage,
+    error,
+    isSubmitting,
     handleQuantityChange,
     handleIncrement,
     handleDecrement,
@@ -51,6 +53,10 @@ export function CarrinhoPage() {
         </div>
       )}
 
+      {items.length > 0 && error && (
+        <div className="border-l-[3px] border-accent pl-3 py-2 text-[13px] mb-5">{error}</div>
+      )}
+
       {items.length > 0 && (
         <div className="flex flex-col gap-8">
           <CartTable
@@ -74,8 +80,14 @@ export function CarrinhoPage() {
                   {user?.name} · {user?.sector}
                 </div>
               </div>
-              <Button type="button" variant="primary" className="px-5 py-3" onClick={handleSubmit}>
-                Solicitar
+              <Button
+                type="button"
+                variant="primary"
+                className="px-5 py-3"
+                disabled={isSubmitting}
+                onClick={() => void handleSubmit()}
+              >
+                {isSubmitting ? 'Enviando…' : 'Solicitar'}
               </Button>
             </div>
           </div>

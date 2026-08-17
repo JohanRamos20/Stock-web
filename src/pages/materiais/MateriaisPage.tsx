@@ -7,7 +7,7 @@ import { useMateriaisPage } from './useMateriaisPage'
 
 export function MateriaisPage() {
   const navigate = useNavigate()
-  const { materials, filteredMaterials, search, setSearch, qty, handleQtyChange, handleAdd, cartCount } =
+  const { materials, filteredMaterials, isLoading, message, search, setSearch, qty, handleQtyChange, handleAdd, cartCount } =
     useMateriaisPage()
 
   return (
@@ -34,7 +34,15 @@ export function MateriaisPage() {
         </div>
       </div>
 
-      <MaterialsCatalogTable materials={filteredMaterials} qty={qty} onQtyChange={handleQtyChange} onAdd={handleAdd} />
+      {message && <div className="border-l-[3px] border-accent pl-3 py-2 text-[13px] mb-4">{message}</div>}
+
+      <MaterialsCatalogTable
+        materials={filteredMaterials}
+        isLoading={isLoading}
+        qty={qty}
+        onQtyChange={handleQtyChange}
+        onAdd={handleAdd}
+      />
     </div>
   )
 }

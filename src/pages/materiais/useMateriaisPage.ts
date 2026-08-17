@@ -1,13 +1,45 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import * as materialsApi from '../../api/materials/materialsApi'
+import { useAuth } from '../../data/auth/AuthContext'
 import { useCart } from '../../data/cart/CartContext'
-import { mockMaterials } from '../../mocks/materials'
 import type { Material } from '../../types/stock'
 
+function errorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error ? error.message : fallback
+}
+
 export function useMateriaisPage() {
+  const { session } = useAuth()
+  const token = session?.token ?? ''
   const cart = useCart()
-  const [materials] = useState<Material[]>(mockMaterials)
+
+  const [materials, setMaterials] = useState<Material[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [message, setMessage] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [qty, setQty] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (!token) return
+
+    let cancelled = false
+    setIsLoading(true)
+    materialsApi
+      .listMaterials(token)
+      .then((data) => {
+        if (!cancelled) setMaterials(data)
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) setMessage(errorMessage(error, 'Não foi possível carregar o catálogo de materiais.'))
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [token])
 
   const query = search.trim().toLowerCase()
   const filteredMaterials = materials.filter(
@@ -27,6 +59,8 @@ export function useMateriaisPage() {
   return {
     materials,
     filteredMaterials,
+    isLoading,
+    message,
     search,
     setSearch,
     qty,
