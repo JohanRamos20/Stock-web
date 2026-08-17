@@ -8,6 +8,7 @@ import { MateriaisPage } from '../pages/materiais/MateriaisPage'
 import { MinhasSolicitacoesPage } from '../pages/minhasSolicitacoes/MinhasSolicitacoesPage'
 import { AppShell } from './AppShell'
 import { ProtectedRoute } from './ProtectedRoute'
+import { RoleGuard } from './RoleGuard'
 import { RoleLanding } from './RoleLanding'
 import { ROUTES } from './paths'
 
@@ -20,12 +21,17 @@ export const router = createBrowserRouter([
         element: <AppShell />,
         children: [
           { index: true, element: <RoleLanding /> },
-          { path: ROUTES.dashboard, element: <DashboardPage /> },
-          { path: ROUTES.estoque, element: <EstoquePage /> },
-          { path: ROUTES.solicitacoes, element: <SolicitacoesPage /> },
-          { path: ROUTES.servidores, element: <ServidoresPage /> },
-          { path: ROUTES.materiais, element: <MateriaisPage /> },
-          { path: ROUTES.minhasSolicitacoes, element: <MinhasSolicitacoesPage /> },
+          {
+            element: <RoleGuard />,
+            children: [
+              { path: ROUTES.dashboard, element: <DashboardPage /> },
+              { path: ROUTES.estoque, element: <EstoquePage /> },
+              { path: ROUTES.solicitacoes, element: <SolicitacoesPage /> },
+              { path: ROUTES.servidores, element: <ServidoresPage /> },
+              { path: ROUTES.materiais, element: <MateriaisPage /> },
+              { path: ROUTES.minhasSolicitacoes, element: <MinhasSolicitacoesPage /> },
+            ],
+          },
         ],
       },
     ],
