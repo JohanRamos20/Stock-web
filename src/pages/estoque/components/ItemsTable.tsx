@@ -1,13 +1,18 @@
 import { Button } from '../../../components/ui/Button'
-import type { StockItem } from '../../../mocks/items'
+import { CATEGORY_LABELS, UNIT_TYPE_LABELS, type Material } from '../../../types/stock'
 
 interface ItemsTableProps {
-  items: StockItem[]
-  onEdit: (item: StockItem) => void
-  onDelete: (item: StockItem) => void
+  items: Material[]
+  isLoading: boolean
+  onEdit: (item: Material) => void
+  onDelete: (item: Material) => void
 }
 
-export function ItemsTable({ items, onEdit, onDelete }: ItemsTableProps) {
+export function ItemsTable({ items, isLoading, onEdit, onDelete }: ItemsTableProps) {
+  if (isLoading) {
+    return <p className="text-muted text-sm px-2 py-6">Carregando itens…</p>
+  }
+
   if (items.length === 0) {
     return <p className="text-muted text-sm px-2 py-6">Nenhum item corresponde à busca.</p>
   }
@@ -16,9 +21,6 @@ export function ItemsTable({ items, onEdit, onDelete }: ItemsTableProps) {
     <table className="w-full border-collapse text-sm">
       <thead>
         <tr>
-          <th className="w-[86px] text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
-            Código
-          </th>
           <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
             Item
           </th>
@@ -39,12 +41,11 @@ export function ItemsTable({ items, onEdit, onDelete }: ItemsTableProps) {
       <tbody>
         {items.map((item) => (
           <tr key={item.id} className="hover:bg-text/4">
-            <td className="text-muted tabular-nums px-2 py-2 border-b border-divider">{item.codigo}</td>
-            <td className="font-semibold px-2 py-2 border-b border-divider">{item.nome}</td>
-            <td className="text-muted px-2 py-2 border-b border-divider">{item.categoria}</td>
-            <td className="text-muted px-2 py-2 border-b border-divider">{item.local}</td>
+            <td className="font-semibold px-2 py-2 border-b border-divider">{item.name}</td>
+            <td className="text-muted px-2 py-2 border-b border-divider">{CATEGORY_LABELS[item.category]}</td>
+            <td className="text-muted px-2 py-2 border-b border-divider">{item.location}</td>
             <td className="text-right tabular-nums px-2 py-2 border-b border-divider">
-              {item.qtd} {item.un}
+              {item.amount} {UNIT_TYPE_LABELS[item.unitType]}
             </td>
             <td className="px-2 py-2 border-b border-divider">
               <div className="flex justify-end gap-1">

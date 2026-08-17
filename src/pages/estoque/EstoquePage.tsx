@@ -9,6 +9,7 @@ export function EstoquePage() {
   const {
     items,
     filteredItems,
+    isLoading,
     search,
     setSearch,
     form,
@@ -48,7 +49,7 @@ export function EstoquePage() {
       </div>
 
       <div className="grid grid-cols-[1.6fr_1fr] gap-8 items-start">
-        <ItemsTable items={filteredItems} onEdit={handleEdit} onDelete={handleDelete} />
+        <ItemsTable items={filteredItems} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
         <ItemForm form={form} setForm={setForm} message={message} onSubmit={handleSubmit} onClear={handleNew} />
       </div>
 

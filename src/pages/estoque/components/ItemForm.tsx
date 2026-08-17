@@ -3,16 +3,15 @@ import { Button } from '../../../components/ui/Button'
 import { Field } from '../../../components/ui/Field'
 import { Kicker } from '../../../components/ui/Kicker'
 import { Select } from '../../../components/ui/Select'
-import { CATEGORIAS, LOCAIS, UNIDADES } from '../../../mocks/items'
+import { CATEGORY_LABELS, UNIT_TYPE_LABELS, type MaterialCategory, type MaterialUnitType } from '../../../types/stock'
 
 interface ItemFormValues {
-  id: number | null
-  nome: string
-  categoria: string
-  local: string
-  qtd: string
-  un: string
-  min: number
+  id: string | null
+  name: string
+  category: MaterialCategory
+  location: string
+  amount: string
+  unitType: MaterialUnitType
 }
 
 interface ItemFormProps {
@@ -38,35 +37,32 @@ export function ItemForm({ form, setForm, message, onSubmit, onClear }: ItemForm
           id="inome"
           label="Nome do item"
           placeholder="Ex.: Papel A4 75g (resma)"
-          value={form.nome}
-          onChange={(event) => setForm((prev) => ({ ...prev, nome: event.target.value }))}
+          value={form.name}
+          onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
         />
 
         <Select
           id="icat"
           label="Categoria"
-          value={form.categoria}
-          onChange={(event) => setForm((prev) => ({ ...prev, categoria: event.target.value }))}
+          value={form.category}
+          onChange={(event) =>
+            setForm((prev) => ({ ...prev, category: event.target.value as MaterialCategory }))
+          }
         >
-          {CATEGORIAS.map((categoria) => (
-            <option key={categoria} value={categoria}>
-              {categoria}
+          {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
             </option>
           ))}
         </Select>
 
-        <Select
+        <Field
           id="iloc"
           label="Local de armazenamento"
-          value={form.local}
-          onChange={(event) => setForm((prev) => ({ ...prev, local: event.target.value }))}
-        >
-          {LOCAIS.map((local) => (
-            <option key={local} value={local}>
-              {local}
-            </option>
-          ))}
-        </Select>
+          placeholder="Ex.: Prateleira A-1"
+          value={form.location}
+          onChange={(event) => setForm((prev) => ({ ...prev, location: event.target.value }))}
+        />
 
         <div className="grid grid-cols-2 gap-3">
           <Field
@@ -75,19 +71,21 @@ export function ItemForm({ form, setForm, message, onSubmit, onClear }: ItemForm
             type="number"
             min={0}
             placeholder="0"
-            value={form.qtd}
-            onChange={(event) => setForm((prev) => ({ ...prev, qtd: event.target.value }))}
+            value={form.amount}
+            onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))}
           />
 
           <Select
             id="iun"
             label="Unidade"
-            value={form.un}
-            onChange={(event) => setForm((prev) => ({ ...prev, un: event.target.value }))}
+            value={form.unitType}
+            onChange={(event) =>
+              setForm((prev) => ({ ...prev, unitType: event.target.value as MaterialUnitType }))
+            }
           >
-            {UNIDADES.map((un) => (
-              <option key={un} value={un}>
-                {un}
+            {Object.entries(UNIT_TYPE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
               </option>
             ))}
           </Select>
