@@ -5,6 +5,7 @@ import { EstoquePage } from '../pages/estoque/EstoquePage'
 import { SolicitacoesPage } from '../pages/solicitacoes/SolicitacoesPage'
 import { ServidoresPage } from '../pages/servidores/ServidoresPage'
 import { MateriaisPage } from '../pages/materiais/MateriaisPage'
+import { CarrinhoPage } from '../pages/carrinho/CarrinhoPage'
 import { MinhasSolicitacoesPage } from '../pages/minhasSolicitacoes/MinhasSolicitacoesPage'
 import { AppShell } from './AppShell'
 import { ProtectedRoute } from './ProtectedRoute'
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
               { path: ROUTES.solicitacoes, element: <SolicitacoesPage /> },
               { path: ROUTES.servidores, element: <ServidoresPage /> },
               { path: ROUTES.materiais, element: <MateriaisPage /> },
+              { path: ROUTES.carrinho, element: <CarrinhoPage /> },
               { path: ROUTES.minhasSolicitacoes, element: <MinhasSolicitacoesPage /> },
             ],
           },

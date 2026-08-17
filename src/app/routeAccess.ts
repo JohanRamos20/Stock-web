@@ -9,6 +9,7 @@ export const ROUTE_ROLES: Partial<Record<string, Role>> = {
   [ROUTES.solicitacoes]: 'admin',
   [ROUTES.servidores]: 'admin',
   [ROUTES.materiais]: 'servidor',
+  [ROUTES.carrinho]: 'servidor',
   [ROUTES.minhasSolicitacoes]: 'servidor',
 }
 
