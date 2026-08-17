@@ -11,6 +11,8 @@ interface RequestRowProps {
   onComplete: () => void
   onGeneratePdf: () => void
   isCompleting: boolean
+  isGeneratingPdf: boolean
+  pdfDone: boolean
   pdfNotice: string | null
 }
 
@@ -22,7 +24,17 @@ function formatDateTime(iso: string): string {
   return `${datePart} · ${hours}h${minutes}`
 }
 
-export function RequestRow({ row, isOpen, onToggle, onComplete, onGeneratePdf, isCompleting, pdfNotice }: RequestRowProps) {
+export function RequestRow({
+  row,
+  isOpen,
+  onToggle,
+  onComplete,
+  onGeneratePdf,
+  isCompleting,
+  isGeneratingPdf,
+  pdfDone,
+  pdfNotice,
+}: RequestRowProps) {
   const { request, requesterName, requesterSector } = row
   const totalUnits = request.materials.reduce((sum, material) => sum + material.quantity, 0)
   const isPending = request.status === 'PENDING'
@@ -85,8 +97,9 @@ export function RequestRow({ row, isOpen, onToggle, onComplete, onGeneratePdf, i
               <div>
                 <div className="font-heading font-extrabold text-sm">Termo de retirada</div>
                 <p className="text-muted text-xs m-0 mt-1 max-w-[420px]">
-                  Geração do termo em PDF ainda não está disponível — assim que o backend expuser essa
-                  funcionalidade, o termo poderá ser gerado aqui.
+                  {pdfDone
+                    ? 'Termo gerado — o pedido já pode ser concluído e o estoque baixado.'
+                    : 'Gere e baixe o termo em PDF antes de concluir o pedido. A conclusão fica bloqueada até o download.'}
                 </p>
                 {pdfNotice && (
                   <div className="mt-2">
@@ -95,10 +108,10 @@ export function RequestRow({ row, isOpen, onToggle, onComplete, onGeneratePdf, i
                 )}
               </div>
               <div className="flex gap-2 flex-none">
-                <Button type="button" variant="secondary" onClick={onGeneratePdf}>
-                  Gerar PDF do termo
+                <Button type="button" variant="secondary" disabled={isGeneratingPdf} onClick={onGeneratePdf}>
+                  {isGeneratingPdf ? 'Gerando…' : pdfDone ? 'Baixar termo novamente' : 'Gerar PDF do termo'}
                 </Button>
-                <Button type="button" variant="primary" disabled={isCompleting} onClick={onComplete}>
+                <Button type="button" variant="primary" disabled={isCompleting || !pdfDone} onClick={onComplete}>
                   {isCompleting ? 'Concluindo…' : 'Concluir pedido'}
                 </Button>
               </div>

@@ -3,6 +3,7 @@ import * as requestsApi from '../../api/requests/requestsApi'
 import * as withdrawalTermApi from '../../api/requests/withdrawalTermApi'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
+import { downloadBlob } from '../../lib/download'
 import type { RequestDto, RequestStatus } from '../../types/requests'
 import type { User } from '../../types/auth'
 
@@ -34,6 +35,8 @@ export function useSolicitacoesPage() {
   const [completingId, setCompletingId] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
   const [pdfNotice, setPdfNotice] = useState<string | null>(null)
+  const [pdfDone, setPdfDone] = useState<Record<string, boolean>>({})
+  const [generatingPdfId, setGeneratingPdfId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!token) return
@@ -90,6 +93,8 @@ export function useSolicitacoesPage() {
   }
 
   async function handleComplete(id: string) {
+    if (!pdfDone[id]) return
+
     setCompletingId(id)
     setActionError(null)
     try {
@@ -104,10 +109,15 @@ export function useSolicitacoesPage() {
 
   async function handleGeneratePdf(id: string) {
     setPdfNotice(null)
+    setGeneratingPdfId(id)
     try {
-      await withdrawalTermApi.generateWithdrawalTerm(id, token)
+      const { blob, fileName } = await withdrawalTermApi.generateWithdrawalTerm(id, token)
+      downloadBlob(blob, fileName)
+      setPdfDone((prev) => ({ ...prev, [id]: true }))
     } catch (error) {
       setPdfNotice(errorMessage(error, 'Não foi possível gerar o termo de retirada.'))
+    } finally {
+      setGeneratingPdfId(null)
     }
   }
 
@@ -128,6 +138,8 @@ export function useSolicitacoesPage() {
     openId,
     toggleExpand,
     completingId,
+    pdfDone,
+    generatingPdfId,
     handleComplete,
     handleGeneratePdf,
   }

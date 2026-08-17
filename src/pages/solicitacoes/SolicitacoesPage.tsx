@@ -29,6 +29,8 @@ export function SolicitacoesPage() {
     openId,
     toggleExpand,
     completingId,
+    pdfDone,
+    generatingPdfId,
     handleComplete,
     handleGeneratePdf,
   } = useSolicitacoesPage()
@@ -89,6 +91,8 @@ export function SolicitacoesPage() {
               onComplete={() => void handleComplete(row.request.id)}
               onGeneratePdf={() => void handleGeneratePdf(row.request.id)}
               isCompleting={completingId === row.request.id}
+              isGeneratingPdf={generatingPdfId === row.request.id}
+              pdfDone={Boolean(pdfDone[row.request.id])}
               pdfNotice={openId === row.request.id ? pdfNotice : null}
             />
           ))}
