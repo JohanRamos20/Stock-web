@@ -3,6 +3,7 @@ import * as materialsApi from '../../api/materials/materialsApi'
 import * as requestsApi from '../../api/requests/requestsApi'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
+import type { Material } from '../../types/stock'
 import type { RecentRequestData } from './components/RecentRequests'
 
 const REQUESTS_PAGE_SIZE = 200
@@ -18,6 +19,7 @@ export function useDashboardPage() {
 
   const [itemsCount, setItemsCount] = useState(0)
   const [unitsInStock, setUnitsInStock] = useState(0)
+  const [criticalItems, setCriticalItems] = useState<Material[]>([])
   const [openRequests, setOpenRequests] = useState(0)
   const [recentRequests, setRecentRequests] = useState<RecentRequestData[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -40,6 +42,7 @@ export function useDashboardPage() {
 
         setItemsCount(materials.length)
         setUnitsInStock(materials.reduce((sum, material) => sum + material.amount, 0))
+        setCriticalItems(materials.filter((material) => material.isCritical))
         setOpenRequests(requestsPage.data.filter((request) => request.status === 'PENDING').length)
         setRecentRequests(
           [...requestsPage.data]
@@ -72,6 +75,7 @@ export function useDashboardPage() {
   return {
     itemsCount,
     unitsInStock,
+    criticalItems,
     openRequests,
     recentRequests,
     isLoading,
