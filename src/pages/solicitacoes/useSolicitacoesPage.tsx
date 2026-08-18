@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { pdf } from '@react-pdf/renderer'
 import * as requestsApi from '../../api/requests/requestsApi'
-import * as withdrawalTermApi from '../../api/requests/withdrawalTermApi'
+import * as withdrawalSlipApi from '../../api/requests/withdrawalSlipApi'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
-import { downloadBlob } from '../../lib/download'
+import { openBlobInNewTab } from '../../lib/download'
+import { WithdrawalSlipDocument } from '../../pdf/WithdrawalSlipDocument'
 import type { RequestDto, RequestStatus } from '../../types/requests'
 import type { User } from '../../types/auth'
 
@@ -111,8 +113,9 @@ export function useSolicitacoesPage() {
     setPdfNotice(null)
     setGeneratingPdfId(id)
     try {
-      const { blob } = await withdrawalTermApi.generateWithdrawalTerm(id, token)
-      downloadBlob(blob, `termo_retirada_${id}.pdf`)
+      const data = await withdrawalSlipApi.getWithdrawalSlip(id, token)
+      const blob = await pdf(<WithdrawalSlipDocument data={data} />).toBlob()
+      openBlobInNewTab(blob)
       setPdfDone((prev) => ({ ...prev, [id]: true }))
     } catch (error) {
       setPdfNotice(errorMessage(error, 'Não foi possível gerar o termo de retirada.'))

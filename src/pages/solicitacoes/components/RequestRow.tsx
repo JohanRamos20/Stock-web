@@ -99,7 +99,7 @@ export function RequestRow({
                 <p className="text-muted text-xs m-0 mt-1 max-w-[420px]">
                   {pdfDone
                     ? 'Termo gerado — o pedido já pode ser concluído e o estoque baixado.'
-                    : 'Gere e baixe o termo em PDF antes de concluir o pedido. A conclusão fica bloqueada até o download.'}
+                    : 'Gere e abra o termo em PDF antes de concluir o pedido. A conclusão fica bloqueada até a geração do termo.'}
                 </p>
                 {pdfNotice && (
                   <div className="mt-2">
@@ -109,7 +109,7 @@ export function RequestRow({
               </div>
               <div className="flex gap-2 flex-none">
                 <Button type="button" variant="secondary" disabled={isGeneratingPdf} onClick={onGeneratePdf}>
-                  {isGeneratingPdf ? 'Gerando…' : pdfDone ? 'Baixar termo novamente' : 'Gerar PDF do termo'}
+                  {isGeneratingPdf ? 'Gerando…' : pdfDone ? 'Abrir termo novamente' : 'Gerar PDF do termo'}
                 </Button>
                 <Button type="button" variant="primary" disabled={isCompleting || !pdfDone} onClick={onComplete}>
                   {isCompleting ? 'Concluindo…' : 'Concluir pedido'}

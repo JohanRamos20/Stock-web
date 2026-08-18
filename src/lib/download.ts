@@ -1,10 +1,4 @@
-export function downloadBlob(blob: Blob, fileName: string): void {
+export function openBlobInNewTab(blob: Blob): void {
   const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = fileName
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  window.open(url, '_blank')
 }
