@@ -25,7 +25,7 @@ function errorMessage(error: unknown, fallback: string): string {
 export function useCarrinhoPage() {
   const { user, session } = useAuth()
   const token = session?.token ?? ''
-  const { items, totalUnits, updateQuantity, removeItem, clear } = useCart()
+  const { items, totalUnits, editingRequestId, updateQuantity, removeItem, cancelEditing } = useCart()
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
   const [sent, setSent] = useState(false)
   const [sentMessage, setSentMessage] = useState<string | null>(null)
@@ -57,23 +57,32 @@ export function useCarrinhoPage() {
   async function handleSubmit() {
     const materialsCount = items.length
     const units = totalUnits
+    const materialsPayload = items.map((item) => ({ materialId: item.materialId, quantity: item.quantity }))
     setError(null)
     setIsSubmitting(true)
     try {
-      await requestsApi.createRequest(
-        { materials: items.map((item) => ({ materialId: item.materialId, quantity: item.quantity })) },
-        token,
-      )
-      setSentMessage(
-        `Solicitação enviada com sucesso — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Encaminhada ao almoxarifado.`,
-      )
-      clear()
+      if (editingRequestId) {
+        await requestsApi.updateRequest(editingRequestId, { materials: materialsPayload }, token)
+        setSentMessage(
+          `Solicitação #${editingRequestId.slice(0, 8)} atualizada — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Reenviada ao almoxarifado.`,
+        )
+      } else {
+        await requestsApi.createRequest({ materials: materialsPayload }, token)
+        setSentMessage(
+          `Solicitação enviada com sucesso — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Encaminhada ao almoxarifado.`,
+        )
+      }
+      cancelEditing()
       setSent(true)
     } catch (submitError) {
       setError(errorMessage(submitError, 'Não foi possível enviar a solicitação.'))
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  function handleCancelEdit() {
+    cancelEditing()
   }
 
   function closeConfirm() {
@@ -89,6 +98,7 @@ export function useCarrinhoPage() {
     user,
     items,
     totalUnits,
+    editingRequestId,
     confirm,
     sent,
     sentMessage,
@@ -99,6 +109,7 @@ export function useCarrinhoPage() {
     handleDecrement,
     handleRemove,
     handleSubmit,
+    handleCancelEdit,
     closeConfirm,
     runConfirm,
     unitsLabel,

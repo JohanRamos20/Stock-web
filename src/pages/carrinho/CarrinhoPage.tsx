@@ -11,6 +11,7 @@ export function CarrinhoPage() {
     user,
     items,
     totalUnits,
+    editingRequestId,
     confirm,
     sent,
     sentMessage,
@@ -21,6 +22,7 @@ export function CarrinhoPage() {
     handleDecrement,
     handleRemove,
     handleSubmit,
+    handleCancelEdit,
     closeConfirm,
     runConfirm,
     unitsLabel,
@@ -38,6 +40,18 @@ export function CarrinhoPage() {
         <div className="bg-accent-100 border-l-[3px] border-accent px-4 py-3 mb-5">
           <div className="font-heading font-extrabold text-sm text-accent-700 mb-1">Solicitação enviada</div>
           <div className="text-[13px]">{sentMessage}</div>
+        </div>
+      )}
+
+      {!showSuccess && editingRequestId && (
+        <div className="bg-accent-100 border-l-[3px] border-accent px-4 py-3 mb-5 flex items-center justify-between gap-4">
+          <div className="text-[13px]">
+            Editando a solicitação #{editingRequestId.slice(0, 8)} — as alterações substituem o pedido original ao
+            reenviar.
+          </div>
+          <Button type="button" variant="secondary" onClick={handleCancelEdit}>
+            Cancelar edição
+          </Button>
         </div>
       )}
 
@@ -87,7 +101,7 @@ export function CarrinhoPage() {
                 disabled={isSubmitting}
                 onClick={() => void handleSubmit()}
               >
-                {isSubmitting ? 'Enviando…' : 'Solicitar'}
+                {isSubmitting ? 'Enviando…' : editingRequestId ? 'Reenviar solicitação' : 'Solicitar'}
               </Button>
             </div>
           </div>
