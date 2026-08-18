@@ -55,36 +55,3 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   return data as T
 }
-
-interface DownloadResult {
-  blob: Blob
-  fileName: string
-}
-
-function fileNameFromDisposition(disposition: string | null, fallback: string): string {
-  const match = disposition?.match(/filename="?([^"]+)"?/)
-  return match?.[1] ?? fallback
-}
-
-export async function apiRequestBlob(path: string, options: { token?: string } = {}): Promise<DownloadResult> {
-  const headers: Record<string, string> = {}
-  if (options.token) {
-    headers.Authorization = `Bearer ${options.token}`
-  }
-
-  const response = await fetch(`${API_BASE_URL}${path}`, { headers })
-
-  if (!response.ok) {
-    const data: unknown = await response.json().catch(() => null)
-    const body = data as ApiErrorBody | null
-    throw new ApiError(
-      body?.error?.message ?? 'Erro inesperado ao comunicar com o servidor.',
-      response.status,
-      body?.error?.code,
-    )
-  }
-
-  const blob = await response.blob()
-  const fileName = fileNameFromDisposition(response.headers.get('Content-Disposition'), 'documento.pdf')
-  return { blob, fileName }
-}
