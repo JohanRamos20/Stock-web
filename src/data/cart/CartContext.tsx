@@ -14,10 +14,13 @@ interface CartContextValue {
   items: CartItem[]
   count: number
   totalUnits: number
+  editingRequestId: string | null
   addItem: (material: Material, quantity: number) => void
   updateQuantity: (materialId: string, quantity: number) => void
   removeItem: (materialId: string) => void
   clear: () => void
+  startEditing: (requestId: string, items: CartItem[]) => void
+  cancelEditing: () => void
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
@@ -28,6 +31,7 @@ function clamp(quantity: number, amount: number): number {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [editingRequestId, setEditingRequestId] = useState<string | null>(null)
 
   function addItem(material: Material, quantity: number) {
     setItems((prev) => {
@@ -64,11 +68,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([])
   }
 
+  function startEditing(requestId: string, editItems: CartItem[]) {
+    setItems(editItems)
+    setEditingRequestId(requestId)
+  }
+
+  function cancelEditing() {
+    setItems([])
+    setEditingRequestId(null)
+  }
+
   const count = items.length
   const totalUnits = items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <CartContext.Provider value={{ items, count, totalUnits, addItem, updateQuantity, removeItem, clear }}>
+    <CartContext.Provider
+      value={{
+        items,
+        count,
+        totalUnits,
+        editingRequestId,
+        addItem,
+        updateQuantity,
+        removeItem,
+        clear,
+        startEditing,
+        cancelEditing,
+      }}
+    >
       {children}
     </CartContext.Provider>
   )
