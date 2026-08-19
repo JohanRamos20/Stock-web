@@ -1,5 +1,5 @@
 import { apiRequest } from '../../lib/http/apiClient'
-import type { Role, Sector, Session, User } from '../../types/auth'
+import type { ApiRole, Sector, Session, User } from '../../types/auth'
 import { mapApiUser, type ApiUser } from './usersMapper'
 
 interface LoginPayload {
@@ -10,11 +10,12 @@ interface LoginPayload {
 interface CreateUserPayload {
   name: string
   email: string
-  role: Role
+  siapp: string
+  role: ApiRole
   sector: Sector
 }
 
-interface ResetPasswordPayload {
+interface ChangePasswordPayload {
   email: string
   currentPassword: string
   newPassword: string
@@ -36,8 +37,8 @@ export async function getMe(token: string): Promise<User> {
   return mapApiUser(apiUser)
 }
 
-export async function createUser(payload: CreateUserPayload): Promise<User> {
-  const apiUser = await apiRequest<ApiUser>('/users', { method: 'POST', body: payload })
+export async function createUser(payload: CreateUserPayload, token: string): Promise<User> {
+  const apiUser = await apiRequest<ApiUser>('/users', { method: 'POST', body: payload, token })
   return mapApiUser(apiUser)
 }
 
@@ -46,6 +47,10 @@ export async function listUsers(token: string): Promise<User[]> {
   return apiUsers.map(mapApiUser)
 }
 
-export function resetPassword(payload: ResetPasswordPayload): Promise<void> {
+export function changePassword(payload: ChangePasswordPayload): Promise<void> {
   return apiRequest<void>('/users/password/reset', { method: 'POST', body: payload })
+}
+
+export function resetUserPassword(id: string, token: string): Promise<void> {
+  return apiRequest<void>(`/users/${id}/password/reset`, { method: 'PATCH', token })
 }

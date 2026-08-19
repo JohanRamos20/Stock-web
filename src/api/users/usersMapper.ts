@@ -1,4 +1,4 @@
-import type { Sector, User } from '../../types/auth'
+import { SECTOR_LABELS, type Sector, type User } from '../../types/auth'
 
 export interface ApiUser {
   id: string
@@ -6,11 +6,6 @@ export interface ApiUser {
   email: string
   sector: string
   role: string
-}
-
-const SECTOR_LABELS: Record<Sector, string> = {
-  ADMINISTRATIVE: 'Administrativo',
-  ACADEMICS: 'Professor',
 }
 
 function isKnownSector(value: string): value is Sector {

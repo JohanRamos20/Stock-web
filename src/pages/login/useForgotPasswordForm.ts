@@ -69,7 +69,7 @@ export function useForgotPasswordForm({ onCancel, onSuccess }: UseForgotPassword
     setError(null)
     setIsSubmitting(true)
     try {
-      await usersApi.resetPassword({ email, currentPassword, newPassword, confirmNewPassword })
+      await usersApi.changePassword({ email, currentPassword, newPassword, confirmNewPassword })
       resetFields()
       onSuccess()
     } catch (err) {

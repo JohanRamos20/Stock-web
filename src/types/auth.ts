@@ -2,6 +2,18 @@ export type Role = 'servidor' | 'admin'
 
 export type Sector = 'ADMINISTRATIVE' | 'ACADEMICS'
 
+export const SECTOR_LABELS: Record<Sector, string> = {
+  ADMINISTRATIVE: 'Administrativo',
+  ACADEMICS: 'Professor',
+}
+
+export type ApiRole = 'ADMIN' | 'USER'
+
+export const ROLE_LABELS: Record<ApiRole, string> = {
+  USER: 'Servidor requisitante',
+  ADMIN: 'Administrador do almoxarifado',
+}
+
 export interface User {
   id: string
   name: string
