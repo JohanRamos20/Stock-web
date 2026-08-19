@@ -24,9 +24,6 @@ export function ServersTable({ users, isLoading, onResetPassword, resettingId }:
           <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
             Nome
           </th>
-          <th className="w-[110px] text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
-            Matrícula
-          </th>
           <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
             Setor
           </th>
@@ -42,8 +39,6 @@ export function ServersTable({ users, isLoading, onResetPassword, resettingId }:
               <div className="font-semibold">{user.name}</div>
               <div className="text-muted text-xs">{user.email}</div>
             </td>
-            {/* GET /users não retorna a matrícula (siapp) hoje — backend precisa expor esse campo */}
-            <td className="text-muted tabular-nums px-2 py-2 border-b border-divider">—</td>
             <td className="text-muted px-2 py-2 border-b border-divider">{user.sector}</td>
             <td className="px-2 py-2 border-b border-divider">
               <div className="flex justify-end gap-1">
