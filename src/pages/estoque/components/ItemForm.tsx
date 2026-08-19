@@ -17,12 +17,11 @@ interface ItemFormValues {
 interface ItemFormProps {
   form: ItemFormValues
   setForm: (updater: (form: ItemFormValues) => ItemFormValues) => void
-  message: string | null
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   onClear: () => void
 }
 
-export function ItemForm({ form, setForm, message, onSubmit, onClear }: ItemFormProps) {
+export function ItemForm({ form, setForm, onSubmit, onClear }: ItemFormProps) {
   const isEditing = form.id !== null
 
   return (
@@ -99,8 +98,6 @@ export function ItemForm({ form, setForm, message, onSubmit, onClear }: ItemForm
             Limpar
           </Button>
         </div>
-
-        {message && <div className="border-l-[3px] border-accent pl-3 py-2 text-[13px]">{message}</div>}
       </form>
     </aside>
   )

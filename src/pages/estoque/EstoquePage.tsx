@@ -12,11 +12,13 @@ export function EstoquePage() {
     isLoading,
     search,
     setSearch,
+    isFormOpen,
     form,
     setForm,
     message,
     confirm,
-    handleNew,
+    handleToggleForm,
+    handleClearForm,
     handleEdit,
     handleDelete,
     handleSubmit,
@@ -42,16 +44,22 @@ export function EstoquePage() {
             onChange={(event) => setSearch(event.target.value)}
             wrapperClassName="w-[260px]"
           />
-          <Button type="button" variant="primary" onClick={handleNew}>
-            Novo item
+          <Button type="button" variant="primary" onClick={handleToggleForm}>
+            {isFormOpen ? 'Fechar formulário' : 'Novo item'}
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-[1.6fr_1fr] gap-8 items-start">
+      {message && <div className="border-l-[3px] border-accent pl-3 py-2 text-[13px] mb-5">{message}</div>}
+
+      {isFormOpen ? (
+        <div className="grid grid-cols-[1.6fr_1fr] gap-8 items-start">
+          <ItemsTable items={filteredItems} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
+          <ItemForm form={form} setForm={setForm} onSubmit={handleSubmit} onClear={handleClearForm} />
+        </div>
+      ) : (
         <ItemsTable items={filteredItems} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
-        <ItemForm form={form} setForm={setForm} message={message} onSubmit={handleSubmit} onClear={handleNew} />
-      </div>
+      )}
 
       <ConfirmDialog
         open={confirm !== null}
