@@ -9,7 +9,6 @@ export interface Material {
   location: string
   amount: number
   unitType: MaterialUnitType
-  isCritical: boolean
   createdAt: string
   updatedAt: string
 }

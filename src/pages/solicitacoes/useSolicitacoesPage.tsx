@@ -45,7 +45,7 @@ export function useSolicitacoesPage() {
 
     let cancelled = false
     setIsLoading(true)
-    Promise.all([requestsApi.listAllRequests({ page: 1, limit: REQUESTS_PAGE_SIZE }, token), usersApi.listUsers()])
+    Promise.all([requestsApi.listAllRequests({ page: 1, limit: REQUESTS_PAGE_SIZE }, token), usersApi.listUsers(token)])
       .then(([page, users]) => {
         if (cancelled) return
         setRequests(page.data)

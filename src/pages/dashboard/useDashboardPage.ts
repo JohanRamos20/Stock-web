@@ -3,6 +3,7 @@ import * as materialsApi from '../../api/materials/materialsApi'
 import * as requestsApi from '../../api/requests/requestsApi'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
+import { isCriticalStock } from '../../lib/stock'
 import type { Material } from '../../types/stock'
 import type { RecentRequestData } from './components/RecentRequests'
 
@@ -33,7 +34,7 @@ export function useDashboardPage() {
     Promise.all([
       materialsApi.listMaterials(token),
       requestsApi.listAllRequests({ page: 1, limit: REQUESTS_PAGE_SIZE }, token),
-      usersApi.listUsers(),
+      usersApi.listUsers(token),
     ])
       .then(([materials, requestsPage, users]) => {
         if (cancelled) return
@@ -42,7 +43,7 @@ export function useDashboardPage() {
 
         setItemsCount(materials.length)
         setUnitsInStock(materials.reduce((sum, material) => sum + material.amount, 0))
-        setCriticalItems(materials.filter((material) => material.isCritical))
+        setCriticalItems(materials.filter(isCriticalStock))
         setOpenRequests(requestsPage.data.filter((request) => request.status === 'PENDING').length)
         setRecentRequests(
           [...requestsPage.data]
