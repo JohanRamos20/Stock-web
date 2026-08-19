@@ -1,11 +1,27 @@
-import { Kicker } from '../../components/ui/Kicker'
+import { Button } from '../../components/ui/Button'
+import { ServerForm } from './components/ServerForm'
+import { ServersTable } from './components/ServersTable'
+import { useServidoresPage } from './useServidoresPage'
 
 export function ServidoresPage() {
+  const { users, isLoading, form, setForm, message, handleNew, handleSubmit } = useServidoresPage()
+
   return (
     <div>
-      <Kicker>Administrador do almoxarifado</Kicker>
-      <h2>Registro de Servidores</h2>
-      <p className="text-muted text-sm">Em construção.</p>
+      <div className="flex items-end justify-between gap-6 mb-5">
+        <div>
+          <h2 className="mb-1">Registro de servidores</h2>
+          <p className="text-muted text-sm m-0">{users.length} servidores habilitados a retirar material</p>
+        </div>
+        <Button type="button" variant="primary" onClick={handleNew}>
+          Novo servidor
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-[1.6fr_1fr] gap-8 items-start">
+        <ServersTable users={users} isLoading={isLoading} />
+        <ServerForm form={form} setForm={setForm} message={message} onSubmit={handleSubmit} onClear={handleNew} />
+      </div>
     </div>
   )
 }

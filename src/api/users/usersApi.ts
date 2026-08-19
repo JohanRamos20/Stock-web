@@ -1,5 +1,5 @@
 import { apiRequest } from '../../lib/http/apiClient'
-import type { Role, Sector, Session, User } from '../../types/auth'
+import type { ApiRole, Sector, Session, User } from '../../types/auth'
 import { mapApiUser, type ApiUser } from './usersMapper'
 
 interface LoginPayload {
@@ -10,7 +10,8 @@ interface LoginPayload {
 interface CreateUserPayload {
   name: string
   email: string
-  role: Role
+  siapp: string
+  role: ApiRole
   sector: Sector
 }
 
@@ -36,8 +37,8 @@ export async function getMe(token: string): Promise<User> {
   return mapApiUser(apiUser)
 }
 
-export async function createUser(payload: CreateUserPayload): Promise<User> {
-  const apiUser = await apiRequest<ApiUser>('/users', { method: 'POST', body: payload })
+export async function createUser(payload: CreateUserPayload, token: string): Promise<User> {
+  const apiUser = await apiRequest<ApiUser>('/users', { method: 'POST', body: payload, token })
   return mapApiUser(apiUser)
 }
 
