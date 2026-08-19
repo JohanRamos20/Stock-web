@@ -39,6 +39,7 @@ export function useEstoquePage() {
   const [items, setItems] = useState<Material[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const [form, setForm] = useState<ItemFormState>(EMPTY_FORM)
   const [message, setMessage] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
@@ -70,7 +71,13 @@ export function useEstoquePage() {
     (item) => !query || `${item.name}${item.category}${item.location}`.toLowerCase().includes(query),
   )
 
-  function handleNew() {
+  function handleToggleForm() {
+    setIsFormOpen((prev) => !prev)
+    setForm(EMPTY_FORM)
+    setMessage(null)
+  }
+
+  function handleClearForm() {
     setForm(EMPTY_FORM)
     setMessage(null)
   }
@@ -85,6 +92,7 @@ export function useEstoquePage() {
       unitType: item.unitType,
     })
     setMessage(null)
+    setIsFormOpen(true)
   }
 
   function handleDelete(item: Material) {
@@ -125,6 +133,7 @@ export function useEstoquePage() {
         setMessage('Item cadastrado no estoque.')
       }
       setForm(EMPTY_FORM)
+      setIsFormOpen(false)
     } catch (error) {
       setMessage(errorMessage(error, 'Não foi possível salvar o item.'))
     }
@@ -171,11 +180,13 @@ export function useEstoquePage() {
     isLoading,
     search,
     setSearch,
+    isFormOpen,
     form,
     setForm,
     message,
     confirm,
-    handleNew,
+    handleToggleForm,
+    handleClearForm,
     handleEdit,
     handleDelete,
     handleSubmit,
