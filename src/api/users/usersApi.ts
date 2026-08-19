@@ -41,8 +41,8 @@ export async function createUser(payload: CreateUserPayload): Promise<User> {
   return mapApiUser(apiUser)
 }
 
-export async function listUsers(): Promise<User[]> {
-  const apiUsers = await apiRequest<ApiUser[]>('/users')
+export async function listUsers(token: string): Promise<User[]> {
+  const apiUsers = await apiRequest<ApiUser[]>('/users', { token })
   return apiUsers.map(mapApiUser)
 }
 
