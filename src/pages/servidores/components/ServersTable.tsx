@@ -4,9 +4,11 @@ import type { User } from '../../../types/auth'
 interface ServersTableProps {
   users: User[]
   isLoading: boolean
+  onResetPassword: (user: User) => void
+  resettingId: string | null
 }
 
-export function ServersTable({ users, isLoading }: ServersTableProps) {
+export function ServersTable({ users, isLoading, onResetPassword, resettingId }: ServersTableProps) {
   if (isLoading) {
     return <p className="text-muted text-sm px-2 py-6">Carregando servidores…</p>
   }
@@ -28,7 +30,7 @@ export function ServersTable({ users, isLoading }: ServersTableProps) {
           <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
             Setor
           </th>
-          <th className="w-[150px] text-right text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
+          <th className="w-[190px] text-right text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
             Ações
           </th>
         </tr>
@@ -45,8 +47,13 @@ export function ServersTable({ users, isLoading }: ServersTableProps) {
             <td className="text-muted px-2 py-2 border-b border-divider">{user.sector}</td>
             <td className="px-2 py-2 border-b border-divider">
               <div className="flex justify-end gap-1">
-                <Button type="button" variant="ghost" disabled>
-                  Editar
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={resettingId === user.id}
+                  onClick={() => onResetPassword(user)}
+                >
+                  Resetar senha
                 </Button>
                 <Button type="button" variant="ghost" disabled>
                   Excluir

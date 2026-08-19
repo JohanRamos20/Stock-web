@@ -16,12 +16,11 @@ interface ServerFormValues {
 interface ServerFormProps {
   form: ServerFormValues
   setForm: (updater: (form: ServerFormValues) => ServerFormValues) => void
-  message: string | null
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   onClear: () => void
 }
 
-export function ServerForm({ form, setForm, message, onSubmit, onClear }: ServerFormProps) {
+export function ServerForm({ form, setForm, onSubmit, onClear }: ServerFormProps) {
   return (
     <aside className="bg-white border-2 border-divider p-5 flex flex-col gap-3.5">
       <div>
@@ -89,8 +88,6 @@ export function ServerForm({ form, setForm, message, onSubmit, onClear }: Server
             Limpar
           </Button>
         </div>
-
-        {message && <div className="border-l-[3px] border-accent pl-3 py-2 text-[13px]">{message}</div>}
       </form>
     </aside>
   )

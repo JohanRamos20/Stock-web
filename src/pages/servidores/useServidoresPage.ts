@@ -11,6 +11,13 @@ interface ServerFormState {
   role: ApiRole
 }
 
+interface ConfirmState {
+  title: string
+  body: string
+  actionLabel: string
+  run: () => Promise<void>
+}
+
 const EMPTY_FORM: ServerFormState = {
   name: '',
   email: '',
@@ -29,8 +36,11 @@ export function useServidoresPage() {
 
   const [users, setUsers] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const [form, setForm] = useState<ServerFormState>(EMPTY_FORM)
   const [message, setMessage] = useState<string | null>(null)
+  const [confirm, setConfirm] = useState<ConfirmState | null>(null)
+  const [resettingId, setResettingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!token) return
@@ -54,7 +64,13 @@ export function useServidoresPage() {
     }
   }, [token])
 
-  function handleNew() {
+  function handleToggleForm() {
+    setIsFormOpen((prev) => !prev)
+    setForm(EMPTY_FORM)
+    setMessage(null)
+  }
+
+  function handleClearForm() {
     setForm(EMPTY_FORM)
     setMessage(null)
   }
@@ -81,18 +97,54 @@ export function useServidoresPage() {
       setUsers((prev) => prev.concat(created))
       setMessage('Servidor cadastrado.')
       setForm(EMPTY_FORM)
+      setIsFormOpen(false)
     } catch (error) {
       setMessage(errorMessage(error, 'Não foi possível cadastrar o servidor.'))
     }
   }
 
+  function handleResetPassword(user: User) {
+    setConfirm({
+      title: 'Resetar senha?',
+      body: `A senha de "${user.name}" volta a ser a matrícula (SIAPE) cadastrada.`,
+      actionLabel: 'Resetar senha',
+      run: async () => {
+        setResettingId(user.id)
+        try {
+          await usersApi.resetUserPassword(user.id, token)
+          setMessage(`Senha de ${user.name} redefinida.`)
+        } catch (error) {
+          setMessage(errorMessage(error, 'Não foi possível resetar a senha.'))
+        } finally {
+          setResettingId(null)
+        }
+      },
+    })
+  }
+
+  function closeConfirm() {
+    setConfirm(null)
+  }
+
+  async function runConfirm() {
+    await confirm?.run()
+    setConfirm(null)
+  }
+
   return {
     users,
     isLoading,
+    isFormOpen,
     form,
     setForm,
     message,
-    handleNew,
+    confirm,
+    resettingId,
+    handleToggleForm,
+    handleClearForm,
     handleSubmit,
+    handleResetPassword,
+    closeConfirm,
+    runConfirm,
   }
 }

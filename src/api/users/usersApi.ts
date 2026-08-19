@@ -15,7 +15,7 @@ interface CreateUserPayload {
   sector: Sector
 }
 
-interface ResetPasswordPayload {
+interface ChangePasswordPayload {
   email: string
   currentPassword: string
   newPassword: string
@@ -47,6 +47,10 @@ export async function listUsers(token: string): Promise<User[]> {
   return apiUsers.map(mapApiUser)
 }
 
-export function resetPassword(payload: ResetPasswordPayload): Promise<void> {
+export function changePassword(payload: ChangePasswordPayload): Promise<void> {
   return apiRequest<void>('/users/password/reset', { method: 'POST', body: payload })
+}
+
+export function resetUserPassword(id: string, token: string): Promise<void> {
+  return apiRequest<void>(`/users/${id}/password/reset`, { method: 'PATCH', token })
 }
