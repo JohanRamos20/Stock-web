@@ -24,6 +24,13 @@ export interface RequestRowData {
   completedByName: string | null
 }
 
+interface ConfirmState {
+  title: string
+  body: string
+  actionLabel: string
+  run: () => void
+}
+
 export function useSolicitacoesPage() {
   const { session } = useAuth()
   const token = session?.token ?? ''
@@ -40,6 +47,8 @@ export function useSolicitacoesPage() {
   const [pdfNotice, setPdfNotice] = useState<string | null>(null)
   const [pdfDone, setPdfDone] = useState<Record<string, boolean>>({})
   const [generatingPdfId, setGeneratingPdfId] = useState<string | null>(null)
+  const [cancelingId, setCancelingId] = useState<string | null>(null)
+  const [confirm, setConfirm] = useState<ConfirmState | null>(null)
 
   useEffect(() => {
     if (!token) return
@@ -127,6 +136,36 @@ export function useSolicitacoesPage() {
     }
   }
 
+  async function runCancel(request: RequestDto) {
+    setCancelingId(request.id)
+    try {
+      await requestsApi.cancelRequest(request.id, token)
+      setRequests((prev) => prev.map((item) => (item.id === request.id ? { ...item, status: 'CANCELED' } : item)))
+    } catch (error) {
+      setActionError(errorMessage(error, 'Não foi possível cancelar a solicitação.'))
+    } finally {
+      setCancelingId(null)
+    }
+  }
+
+  function handleCancelRequest(request: RequestDto) {
+    setConfirm({
+      title: 'Cancelar solicitação?',
+      body: `Os materiais da solicitação #${request.id.slice(0, 8)} retornam ao estoque. Esta ação não pode ser desfeita.`,
+      actionLabel: 'Cancelar solicitação',
+      run: () => void runCancel(request),
+    })
+  }
+
+  function closeConfirm() {
+    setConfirm(null)
+  }
+
+  function runConfirm() {
+    confirm?.run()
+    setConfirm(null)
+  }
+
   return {
     isLoading,
     loadError,
@@ -146,7 +185,12 @@ export function useSolicitacoesPage() {
     completingId,
     pdfDone,
     generatingPdfId,
+    cancelingId,
+    confirm,
     handleComplete,
     handleGeneratePdf,
+    handleCancelRequest,
+    closeConfirm,
+    runConfirm,
   }
 }

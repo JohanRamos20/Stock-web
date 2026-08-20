@@ -10,8 +10,10 @@ interface RequestRowProps {
   onToggle: () => void
   onComplete: () => void
   onGeneratePdf: () => void
+  onCancel: () => void
   isCompleting: boolean
   isGeneratingPdf: boolean
+  isCanceling: boolean
   pdfDone: boolean
   pdfNotice: string | null
 }
@@ -30,8 +32,10 @@ export function RequestRow({
   onToggle,
   onComplete,
   onGeneratePdf,
+  onCancel,
   isCompleting,
   isGeneratingPdf,
+  isCanceling,
   pdfDone,
   pdfNotice,
 }: RequestRowProps) {
@@ -109,10 +113,23 @@ export function RequestRow({
                 )}
               </div>
               <div className="flex gap-2 flex-none">
-                <Button type="button" variant="secondary" disabled={isGeneratingPdf} onClick={onGeneratePdf}>
+                <Button
+                  type="button"
+                  variant="danger"
+                  disabled={isCanceling || isCompleting || isGeneratingPdf}
+                  onClick={onCancel}
+                >
+                  {isCanceling ? 'Cancelando…' : 'Cancelar pedido'}
+                </Button>
+                <Button type="button" variant="secondary" disabled={isGeneratingPdf || isCanceling} onClick={onGeneratePdf}>
                   {isGeneratingPdf ? 'Gerando…' : pdfDone ? 'Abrir termo novamente' : 'Gerar PDF do termo'}
                 </Button>
-                <Button type="button" variant="primary" disabled={isCompleting || !pdfDone} onClick={onComplete}>
+                <Button
+                  type="button"
+                  variant="primary"
+                  disabled={isCompleting || !pdfDone || isCanceling}
+                  onClick={onComplete}
+                >
                   {isCompleting ? 'Concluindo…' : 'Concluir pedido'}
                 </Button>
               </div>

@@ -1,4 +1,5 @@
 import { Alert } from '../../components/ui/Alert'
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { Field } from '../../components/ui/Field'
 import { RequestsKpis } from './components/RequestsKpis'
 import { RequestRow } from './components/RequestRow'
@@ -31,8 +32,13 @@ export function SolicitacoesPage() {
     completingId,
     pdfDone,
     generatingPdfId,
+    cancelingId,
+    confirm,
     handleComplete,
     handleGeneratePdf,
+    handleCancelRequest,
+    closeConfirm,
+    runConfirm,
   } = useSolicitacoesPage()
 
   return (
@@ -90,14 +96,25 @@ export function SolicitacoesPage() {
               onToggle={() => toggleExpand(row.request.id)}
               onComplete={() => void handleComplete(row.request.id)}
               onGeneratePdf={() => void handleGeneratePdf(row.request.id)}
+              onCancel={() => handleCancelRequest(row.request)}
               isCompleting={completingId === row.request.id}
               isGeneratingPdf={generatingPdfId === row.request.id}
+              isCanceling={cancelingId === row.request.id}
               pdfDone={Boolean(pdfDone[row.request.id])}
               pdfNotice={openId === row.request.id ? pdfNotice : null}
             />
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirm !== null}
+        title={confirm?.title ?? ''}
+        body={confirm?.body ?? ''}
+        actionLabel={confirm?.actionLabel ?? ''}
+        onCancel={closeConfirm}
+        onConfirm={runConfirm}
+      />
     </div>
   )
 }
