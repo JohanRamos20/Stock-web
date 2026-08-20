@@ -9,7 +9,7 @@ import { ROUTE_ROLES } from './routeAccess'
 
 const NAV_ITEMS = [
   { label: 'Solicitação de Materiais', to: ROUTES.materiais },
-  { label: 'Solicitação', to: ROUTES.carrinho },
+  { label: 'Solicitação', to: ROUTES.carrinho, hidden: true },
   { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes },
   { label: 'Dashboard', to: ROUTES.dashboard },
   { label: 'Estoque', to: ROUTES.estoque },
@@ -25,7 +25,7 @@ export function AppShell() {
   if (!user) return null
 
   const admin = isAdminRole(user.role)
-  const navItems = NAV_ITEMS.filter((item) => ROUTE_ROLES[item.to] === (admin ? 'admin' : 'servidor'))
+  const navItems = NAV_ITEMS.filter((item) => !item.hidden && ROUTE_ROLES[item.to] === (admin ? 'admin' : 'servidor'))
   const pageTitle = NAV_ITEMS.find((item) => item.to === location.pathname)?.label ?? ''
 
   return (
