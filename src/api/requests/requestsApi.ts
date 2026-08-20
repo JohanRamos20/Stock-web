@@ -18,6 +18,10 @@ export function completeRequest(id: string, token: string): Promise<RequestDto> 
   return apiRequest<RequestDto>(`/requests/${id}/complete`, { method: 'PATCH', token })
 }
 
+export function separateRequest(id: string, token: string): Promise<RequestDto> {
+  return apiRequest<RequestDto>(`/requests/${id}/separate`, { method: 'PATCH', token })
+}
+
 export function listMyRequests(params: { page: number; limit: number }, token: string): Promise<PaginatedRequestsDto> {
   return apiRequest<PaginatedRequestsDto>(`/requests/me?page=${params.page}&limit=${params.limit}`, { token })
 }

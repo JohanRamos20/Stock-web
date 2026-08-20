@@ -48,6 +48,7 @@ export function useSolicitacoesPage() {
   const [pdfDone, setPdfDone] = useState<Record<string, boolean>>({})
   const [generatingPdfId, setGeneratingPdfId] = useState<string | null>(null)
   const [cancelingId, setCancelingId] = useState<string | null>(null)
+  const [separatingId, setSeparatingId] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
 
   useEffect(() => {
@@ -121,6 +122,19 @@ export function useSolicitacoesPage() {
     }
   }
 
+  async function handleSeparate(id: string) {
+    setSeparatingId(id)
+    setActionError(null)
+    try {
+      const updated = await requestsApi.separateRequest(id, token)
+      setRequests((prev) => prev.map((request) => (request.id === id ? updated : request)))
+    } catch (error) {
+      setActionError(errorMessage(error, 'Não foi possível separar os materiais.'))
+    } finally {
+      setSeparatingId(null)
+    }
+  }
+
   async function handleGeneratePdf(id: string) {
     setPdfNotice(null)
     setGeneratingPdfId(id)
@@ -186,10 +200,12 @@ export function useSolicitacoesPage() {
     pdfDone,
     generatingPdfId,
     cancelingId,
+    separatingId,
     confirm,
     handleComplete,
     handleGeneratePdf,
     handleCancelRequest,
+    handleSeparate,
     closeConfirm,
     runConfirm,
   }

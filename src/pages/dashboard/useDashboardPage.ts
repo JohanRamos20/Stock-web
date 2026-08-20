@@ -44,7 +44,9 @@ export function useDashboardPage() {
         setItemsCount(materials.length)
         setUnitsInStock(materials.reduce((sum, material) => sum + material.amount, 0))
         setCriticalItems(materials.filter(isCriticalStock))
-        setOpenRequests(requestsPage.data.filter((request) => request.status === 'PENDING').length)
+        setOpenRequests(
+          requestsPage.data.filter((request) => request.status === 'PENDING' || request.status === 'SEPARATED').length,
+        )
         setRecentRequests(
           [...requestsPage.data]
             .sort((a, b) => b.createdAt.localeCompare(a.createdAt))

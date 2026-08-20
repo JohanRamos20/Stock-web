@@ -2,13 +2,14 @@ import type { ReactNode } from 'react'
 
 interface TagProps {
   children: ReactNode
-  variant?: 'accent' | 'neutral' | 'outline'
+  variant?: 'accent' | 'neutral' | 'outline' | 'warning'
 }
 
 const variantClasses: Record<NonNullable<TagProps['variant']>, string> = {
   accent: 'bg-accent-100 text-accent-800',
   neutral: 'bg-text/8 text-text/70',
   outline: 'bg-transparent text-text/70 border border-divider',
+  warning: 'bg-amber-100 text-amber-800',
 }
 
 export function Tag({ children, variant = 'accent' }: TagProps) {

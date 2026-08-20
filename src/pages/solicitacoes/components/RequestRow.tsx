@@ -11,9 +11,11 @@ interface RequestRowProps {
   onComplete: () => void
   onGeneratePdf: () => void
   onCancel: () => void
+  onSeparate: () => void
   isCompleting: boolean
   isGeneratingPdf: boolean
   isCanceling: boolean
+  isSeparating: boolean
   pdfDone: boolean
   pdfNotice: string | null
 }
@@ -33,15 +35,18 @@ export function RequestRow({
   onComplete,
   onGeneratePdf,
   onCancel,
+  onSeparate,
   isCompleting,
   isGeneratingPdf,
   isCanceling,
+  isSeparating,
   pdfDone,
   pdfNotice,
 }: RequestRowProps) {
   const { request, requesterName, requesterSector, completedByName } = row
   const totalUnits = request.materials.reduce((sum, material) => sum + material.quantity, 0)
   const isPending = request.status === 'PENDING'
+  const isSeparated = request.status === 'SEPARATED'
 
   return (
     <div className="bg-white">
@@ -98,6 +103,30 @@ export function RequestRow({
           </table>
 
           {isPending && (
+            <div className="border-t-2 border-divider pt-4 flex items-center justify-between gap-6">
+              <div>
+                <div className="font-heading font-extrabold text-sm">Separação de materiais</div>
+                <p className="text-muted text-xs m-0 mt-1 max-w-[420px]">
+                  Confirme que os materiais foram separados fisicamente para liberar a emissão do termo de retirada.
+                </p>
+              </div>
+              <div className="flex gap-2 flex-none">
+                <Button
+                  type="button"
+                  variant="danger"
+                  disabled={isCanceling || isSeparating}
+                  onClick={onCancel}
+                >
+                  {isCanceling ? 'Cancelando…' : 'Cancelar pedido'}
+                </Button>
+                <Button type="button" variant="primary" disabled={isSeparating || isCanceling} onClick={onSeparate}>
+                  {isSeparating ? 'Separando…' : 'Separar materiais'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {isSeparated && (
             <div className="border-t-2 border-divider pt-4 flex items-center justify-between gap-6">
               <div>
                 <div className="font-heading font-extrabold text-sm">Termo de retirada</div>

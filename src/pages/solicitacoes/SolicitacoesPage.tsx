@@ -8,6 +8,7 @@ import { useSolicitacoesPage, type StatusFilter } from './useSolicitacoesPage'
 const FILTERS: { label: string; value: StatusFilter }[] = [
   { label: 'Todas', value: 'ALL' },
   { label: 'Em análise', value: 'PENDING' },
+  { label: 'Separadas', value: 'SEPARATED' },
   { label: 'Atendidas', value: 'COMPLETED' },
   { label: 'Canceladas', value: 'CANCELED' },
 ]
@@ -33,10 +34,12 @@ export function SolicitacoesPage() {
     pdfDone,
     generatingPdfId,
     cancelingId,
+    separatingId,
     confirm,
     handleComplete,
     handleGeneratePdf,
     handleCancelRequest,
+    handleSeparate,
     closeConfirm,
     runConfirm,
   } = useSolicitacoesPage()
@@ -97,9 +100,11 @@ export function SolicitacoesPage() {
               onComplete={() => void handleComplete(row.request.id)}
               onGeneratePdf={() => void handleGeneratePdf(row.request.id)}
               onCancel={() => handleCancelRequest(row.request)}
+              onSeparate={() => void handleSeparate(row.request.id)}
               isCompleting={completingId === row.request.id}
               isGeneratingPdf={generatingPdfId === row.request.id}
               isCanceling={cancelingId === row.request.id}
+              isSeparating={separatingId === row.request.id}
               pdfDone={Boolean(pdfDone[row.request.id])}
               pdfNotice={openId === row.request.id ? pdfNotice : null}
             />

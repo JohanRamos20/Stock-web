@@ -1,6 +1,6 @@
 import type { MaterialCategory, MaterialUnitType } from './stock'
 
-export type RequestStatus = 'PENDING' | 'COMPLETED' | 'CANCELED'
+export type RequestStatus = 'PENDING' | 'SEPARATED' | 'COMPLETED' | 'CANCELED'
 
 export interface RequestMaterialDto {
   materialId: string
@@ -31,12 +31,14 @@ export interface PaginatedRequestsDto {
 
 export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
   PENDING: 'Em análise',
+  SEPARATED: 'Separada',
   COMPLETED: 'Atendida',
   CANCELED: 'Cancelada',
 }
 
-export const REQUEST_STATUS_TAG_VARIANT: Record<RequestStatus, 'accent' | 'neutral' | 'outline'> = {
+export const REQUEST_STATUS_TAG_VARIANT: Record<RequestStatus, 'accent' | 'neutral' | 'outline' | 'warning'> = {
   PENDING: 'outline',
+  SEPARATED: 'warning',
   COMPLETED: 'accent',
   CANCELED: 'neutral',
 }

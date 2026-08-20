@@ -24,6 +24,8 @@ function situacaoText(request: RequestDto): string {
   switch (request.status) {
     case 'PENDING':
       return 'Aguardando liberação do almoxarifado'
+    case 'SEPARATED':
+      return 'Material separado — aguardando retirada'
     case 'COMPLETED':
       return `Material liberado · retirada em ${formatDateTime(request.updatedAt)}`
     case 'CANCELED':
@@ -34,6 +36,7 @@ function situacaoText(request: RequestDto): string {
 export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDeleting }: MyRequestRowProps) {
   const totalUnits = request.materials.reduce((sum, material) => sum + material.quantity, 0)
   const isPending = request.status === 'PENDING'
+  const isSeparated = request.status === 'SEPARATED'
 
   return (
     <div className="bg-white">
@@ -57,7 +60,7 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
           <Button type="button" variant="ghost" onClick={onToggle}>
             {isOpen ? 'Ocultar itens' : 'Ver itens'}
           </Button>
-          {isPending ? (
+          {isPending && (
             <>
               <Button type="button" variant="ghost" disabled={isDeleting} onClick={onEdit}>
                 Editar
@@ -66,9 +69,13 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
                 Excluir pedido
               </Button>
             </>
-          ) : (
-            <span className="text-muted text-xs">Não editável</span>
           )}
+          {isSeparated && (
+            <Button type="button" variant="ghost" disabled={isDeleting} onClick={onDelete}>
+              Excluir pedido
+            </Button>
+          )}
+          {!isPending && !isSeparated && <span className="text-muted text-xs">Não editável</span>}
         </div>
       </div>
 
