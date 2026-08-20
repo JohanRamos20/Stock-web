@@ -3,6 +3,7 @@ import type { PaginatedRequestsDto, RequestDto } from '../../types/requests'
 
 interface CreateRequestPayload {
   materials: { materialId: string; quantity: number }[]
+  userId?: string
 }
 
 export function createRequest(payload: CreateRequestPayload, token: string): Promise<RequestDto> {

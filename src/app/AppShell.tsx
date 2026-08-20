@@ -5,17 +5,21 @@ import { useAuth } from '../data/auth/AuthContext'
 import { useCart } from '../data/cart/CartContext'
 import { getRoleLabel, isAdminRole } from '../lib/auth/role'
 import { ROUTES } from './paths'
-import { ROUTE_ROLES } from './routeAccess'
 
 const NAV_ITEMS = [
-  { label: 'Solicitação de Materiais', to: ROUTES.materiais },
+  { label: 'Dashboard', to: ROUTES.dashboard, role: 'admin' },
+  { label: 'Solicitar Materiais', to: ROUTES.materiais, role: 'admin' },
+  { label: 'Solicitação de Materiais', to: ROUTES.materiais, role: 'servidor' },
   { label: 'Solicitação', to: ROUTES.carrinho, hidden: true },
-  { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes },
-  { label: 'Dashboard', to: ROUTES.dashboard },
-  { label: 'Estoque', to: ROUTES.estoque },
-  { label: 'Solicitações', to: ROUTES.solicitacoes },
-  { label: 'Registro de Servidores', to: ROUTES.servidores },
+  { label: 'Estoque', to: ROUTES.estoque, role: 'admin' },
+  { label: 'Solicitações dos servidores', to: ROUTES.solicitacoes, role: 'admin' },
+  { label: 'Registro de Servidores', to: ROUTES.servidores, role: 'admin' },
+  { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes, role: 'servidor' },
 ] as const
+
+function matchesRole(itemRole: 'admin' | 'servidor' | undefined, admin: boolean): boolean {
+  return !itemRole || itemRole === (admin ? 'admin' : 'servidor')
+}
 
 export function AppShell() {
   const { user, logout } = useAuth()
@@ -25,8 +29,8 @@ export function AppShell() {
   if (!user) return null
 
   const admin = isAdminRole(user.role)
-  const navItems = NAV_ITEMS.filter((item) => !item.hidden && ROUTE_ROLES[item.to] === (admin ? 'admin' : 'servidor'))
-  const pageTitle = NAV_ITEMS.find((item) => item.to === location.pathname)?.label ?? ''
+  const navItems = NAV_ITEMS.filter((item) => !item.hidden && matchesRole(item.role, admin))
+  const pageTitle = NAV_ITEMS.find((item) => item.to === location.pathname && matchesRole(item.role, admin))?.label ?? ''
 
   return (
     <div className="flex min-h-screen bg-bg">

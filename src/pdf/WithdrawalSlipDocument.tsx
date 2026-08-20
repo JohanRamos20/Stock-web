@@ -255,10 +255,16 @@ export function WithdrawalSlipDocument({ data }: WithdrawalSlipDocumentProps) {
             </View>
           </View>
           <View style={[styles.infoRow, styles.infoRowLast]}>
-            <View style={styles.infoCell}>
+            <View style={data.requestedByAdminName ? [styles.infoCell, styles.infoCellDivider] : styles.infoCell}>
               <Text style={styles.infoLabel}>Prazo:</Text>
               <Text style={styles.infoValue}>{data.deadline}</Text>
             </View>
+            {data.requestedByAdminName && (
+              <View style={styles.infoCell}>
+                <Text style={styles.infoLabel}>Requisitado por:</Text>
+                <Text style={styles.infoValue}>{data.requestedByAdminName}</Text>
+              </View>
+            )}
           </View>
         </View>
 

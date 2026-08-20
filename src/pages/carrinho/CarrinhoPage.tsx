@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
+import { SearchableSelect } from '../../components/ui/SearchableSelect'
 import { ROUTES } from '../../app/paths'
 import { CartTable } from './components/CartTable'
 import { useCarrinhoPage } from './useCarrinhoPage'
@@ -9,6 +10,10 @@ export function CarrinhoPage() {
   const navigate = useNavigate()
   const {
     user,
+    isAdmin,
+    servidores,
+    selectedServidorId,
+    setSelectedServidorId,
     items,
     totalUnits,
     editingRequestId,
@@ -87,18 +92,30 @@ export function CarrinhoPage() {
               <span className="font-heading font-extrabold text-xl">{unitsLabel(totalUnits)}</span>
             </div>
 
-            <div className="flex items-center justify-between px-2 py-4">
-              <div>
-                <div className="text-[11px] tracking-[0.08em] uppercase text-muted">Servidor responsável</div>
-                <div className="text-[13px]">
-                  {user?.name} · {user?.sector}
+            <div className="flex items-end justify-between px-2 py-4 gap-4">
+              {isAdmin ? (
+                <SearchableSelect
+                  id="servidor-responsavel"
+                  label="Servidor responsável"
+                  placeholder="Buscar servidor..."
+                  options={servidores.map((servidor) => ({ value: servidor.id, label: `${servidor.name} · ${servidor.sector}` }))}
+                  value={selectedServidorId}
+                  onChange={setSelectedServidorId}
+                  wrapperClassName="w-[280px]"
+                />
+              ) : (
+                <div>
+                  <div className="text-[11px] tracking-[0.08em] uppercase text-muted">Servidor responsável</div>
+                  <div className="text-[13px]">
+                    {user?.name} · {user?.sector}
+                  </div>
                 </div>
-              </div>
+              )}
               <Button
                 type="button"
                 variant="primary"
                 className="px-5 py-3"
-                disabled={isSubmitting}
+                disabled={isSubmitting || (isAdmin && !selectedServidorId)}
                 onClick={() => void handleSubmit()}
               >
                 {isSubmitting ? 'Enviando…' : editingRequestId ? 'Reenviar solicitação' : 'Solicitar'}

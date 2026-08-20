@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as requestsApi from '../../api/requests/requestsApi'
+import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
 import { useCart, type CartItem } from '../../data/cart/CartContext'
+import { isAdminRole } from '../../lib/auth/role'
+import type { User } from '../../types/auth'
 
 interface ConfirmState {
   title: string
@@ -25,12 +28,33 @@ function errorMessage(error: unknown, fallback: string): string {
 export function useCarrinhoPage() {
   const { user, session } = useAuth()
   const token = session?.token ?? ''
+  const isAdmin = isAdminRole(user?.role ?? '')
   const { items, totalUnits, editingRequestId, updateQuantity, removeItem, cancelEditing } = useCart()
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
   const [sent, setSent] = useState(false)
   const [sentMessage, setSentMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [servidores, setServidores] = useState<User[]>([])
+  const [selectedServidorId, setSelectedServidorId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!token || !isAdmin) return
+
+    let cancelled = false
+    usersApi
+      .listUsers(token)
+      .then((data) => {
+        if (!cancelled) setServidores(data)
+      })
+      .catch(() => {
+        // lista de servidores é auxiliar; falha aqui não bloqueia a tela
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [token, isAdmin])
 
   function handleQuantityChange(item: CartItem, value: string) {
     const parsed = parseInt(value, 10)
@@ -67,12 +91,16 @@ export function useCarrinhoPage() {
           `Solicitação #${editingRequestId.slice(0, 8)} atualizada — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Reenviada ao almoxarifado.`,
         )
       } else {
-        await requestsApi.createRequest({ materials: materialsPayload }, token)
+        await requestsApi.createRequest(
+          { materials: materialsPayload, ...(isAdmin && selectedServidorId ? { userId: selectedServidorId } : {}) },
+          token,
+        )
         setSentMessage(
           `Solicitação enviada com sucesso — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Encaminhada ao almoxarifado.`,
         )
       }
       cancelEditing()
+      setSelectedServidorId(null)
       setSent(true)
     } catch (submitError) {
       setError(errorMessage(submitError, 'Não foi possível enviar a solicitação.'))
@@ -96,6 +124,10 @@ export function useCarrinhoPage() {
 
   return {
     user,
+    isAdmin,
+    servidores,
+    selectedServidorId,
+    setSelectedServidorId,
     items,
     totalUnits,
     editingRequestId,

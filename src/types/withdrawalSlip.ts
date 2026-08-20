@@ -11,5 +11,6 @@ export interface WithdrawalSlipDto {
   sector: string
   deadline: string
   createdAt: string
+  requestedByAdminName: string | null
   materials: WithdrawalSlipMaterialDto[]
 }
