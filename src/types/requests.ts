@@ -13,6 +13,8 @@ export interface RequestMaterialDto {
 export interface RequestDto {
   id: string
   userId: string
+  adminId: string | null
+  adminName: string | null
   prazo: string
   status: RequestStatus
   materials: RequestMaterialDto[]

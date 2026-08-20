@@ -47,6 +47,10 @@ export async function listUsers(token: string): Promise<User[]> {
   return apiUsers.map(mapApiUser)
 }
 
+export function deleteUser(id: string, password: string, token: string): Promise<void> {
+  return apiRequest<void>(`/users/${id}`, { method: 'DELETE', body: { password }, token })
+}
+
 export function changePassword(payload: ChangePasswordPayload): Promise<void> {
   return apiRequest<void>('/users/password/reset', { method: 'POST', body: payload })
 }

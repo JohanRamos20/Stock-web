@@ -13,11 +13,15 @@ export function ServidoresPage() {
     setForm,
     message,
     confirm,
+    deletePassword,
+    setDeletePassword,
     resettingId,
+    deletingId,
     handleToggleForm,
     handleClearForm,
     handleSubmit,
     handleResetPassword,
+    handleDeleteUser,
     closeConfirm,
     runConfirm,
   } = useServidoresPage()
@@ -42,7 +46,9 @@ export function ServidoresPage() {
             users={users}
             isLoading={isLoading}
             onResetPassword={handleResetPassword}
+            onDeleteUser={handleDeleteUser}
             resettingId={resettingId}
+            deletingId={deletingId}
           />
           <ServerForm form={form} setForm={setForm} onSubmit={handleSubmit} onClear={handleClearForm} />
         </div>
@@ -51,7 +57,9 @@ export function ServidoresPage() {
           users={users}
           isLoading={isLoading}
           onResetPassword={handleResetPassword}
+          onDeleteUser={handleDeleteUser}
           resettingId={resettingId}
+          deletingId={deletingId}
         />
       )}
 
@@ -62,6 +70,8 @@ export function ServidoresPage() {
         actionLabel={confirm?.actionLabel ?? ''}
         onCancel={closeConfirm}
         onConfirm={runConfirm}
+        password={confirm?.needsPassword ? deletePassword : undefined}
+        onPasswordChange={confirm?.needsPassword ? setDeletePassword : undefined}
       />
     </div>
   )

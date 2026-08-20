@@ -5,10 +5,19 @@ interface ServersTableProps {
   users: User[]
   isLoading: boolean
   onResetPassword: (user: User) => void
+  onDeleteUser: (user: User) => void
   resettingId: string | null
+  deletingId: string | null
 }
 
-export function ServersTable({ users, isLoading, onResetPassword, resettingId }: ServersTableProps) {
+export function ServersTable({
+  users,
+  isLoading,
+  onResetPassword,
+  onDeleteUser,
+  resettingId,
+  deletingId,
+}: ServersTableProps) {
   if (isLoading) {
     return <p className="text-muted text-sm px-2 py-6">Carregando servidores…</p>
   }
@@ -50,7 +59,12 @@ export function ServersTable({ users, isLoading, onResetPassword, resettingId }:
                 >
                   Resetar senha
                 </Button>
-                <Button type="button" variant="ghost" disabled>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={deletingId === user.id}
+                  onClick={() => onDeleteUser(user)}
+                >
                   Excluir
                 </Button>
               </div>

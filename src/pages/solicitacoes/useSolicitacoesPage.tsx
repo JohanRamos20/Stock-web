@@ -21,6 +21,7 @@ export interface RequestRowData {
   request: RequestDto
   requesterName: string
   requesterSector: string
+  completedByName: string | null
 }
 
 export function useSolicitacoesPage() {
@@ -65,10 +66,12 @@ export function useSolicitacoesPage() {
 
   const rows: RequestRowData[] = requests.map((request) => {
     const user = usersById.get(request.userId)
+    const completedByName = request.status === 'COMPLETED' ? request.adminName : null
     return {
       request,
       requesterName: user?.name ?? 'Servidor não encontrado',
       requesterSector: user?.sector ?? '—',
+      completedByName,
     }
   })
 

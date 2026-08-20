@@ -35,7 +35,7 @@ export function RequestRow({
   pdfDone,
   pdfNotice,
 }: RequestRowProps) {
-  const { request, requesterName, requesterSector } = row
+  const { request, requesterName, requesterSector, completedByName } = row
   const totalUnits = request.materials.reduce((sum, material) => sum + material.quantity, 0)
   const isPending = request.status === 'PENDING'
 
@@ -69,6 +69,7 @@ export function RequestRow({
         <div className="border-t border-divider bg-accent-100 px-5 py-4 flex flex-col gap-4">
           <div className="text-[12px] text-muted">
             Retirada registrada: {request.status === 'COMPLETED' ? formatDateTime(request.updatedAt) : '—'}
+            {request.status === 'COMPLETED' && ` · Concluído por: ${completedByName ?? '—'}`}
           </div>
 
           <table className="w-full border-collapse text-sm bg-white">

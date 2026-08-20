@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
+import { ApiError } from '../../lib/http/apiClient'
 import type { ApiRole, Sector, User } from '../../types/auth'
 
 interface ServerFormState {
@@ -15,7 +16,8 @@ interface ConfirmState {
   title: string
   body: string
   actionLabel: string
-  run: () => Promise<void>
+  needsPassword?: boolean
+  run: (password?: string) => Promise<void>
 }
 
 const EMPTY_FORM: ServerFormState = {
@@ -40,7 +42,9 @@ export function useServidoresPage() {
   const [form, setForm] = useState<ServerFormState>(EMPTY_FORM)
   const [message, setMessage] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
+  const [deletePassword, setDeletePassword] = useState('')
   const [resettingId, setResettingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!token) return
@@ -122,13 +126,41 @@ export function useServidoresPage() {
     })
   }
 
+  function handleDeleteUser(user: User) {
+    setDeletePassword('')
+    setConfirm({
+      title: 'Excluir servidor?',
+      body: `Informe sua senha de administrador para excluir "${user.name}" definitivamente. Esta ação não pode ser desfeita.`,
+      actionLabel: 'Excluir servidor',
+      needsPassword: true,
+      run: async (password) => {
+        setDeletingId(user.id)
+        try {
+          await usersApi.deleteUser(user.id, password ?? '', token)
+          setUsers((prev) => prev.filter((existing) => existing.id !== user.id))
+          setMessage(`Servidor removido: ${user.name}.`)
+        } catch (error) {
+          if (error instanceof ApiError && error.status === 409) {
+            setMessage(`"${user.name}" possui solicitações associadas e não pode ser excluído.`)
+          } else {
+            setMessage(errorMessage(error, 'Não foi possível excluir o servidor.'))
+          }
+        } finally {
+          setDeletingId(null)
+        }
+      },
+    })
+  }
+
   function closeConfirm() {
     setConfirm(null)
+    setDeletePassword('')
   }
 
   async function runConfirm() {
-    await confirm?.run()
+    await confirm?.run(deletePassword)
     setConfirm(null)
+    setDeletePassword('')
   }
 
   return {
@@ -139,11 +171,15 @@ export function useServidoresPage() {
     setForm,
     message,
     confirm,
+    deletePassword,
+    setDeletePassword,
     resettingId,
+    deletingId,
     handleToggleForm,
     handleClearForm,
     handleSubmit,
     handleResetPassword,
+    handleDeleteUser,
     closeConfirm,
     runConfirm,
   }
