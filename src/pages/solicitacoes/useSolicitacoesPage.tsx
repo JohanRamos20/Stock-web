@@ -32,7 +32,7 @@ interface ConfirmState {
 }
 
 export function useSolicitacoesPage() {
-  const { session } = useAuth()
+  const { user, session } = useAuth()
   const token = session?.token ?? ''
 
   const [requests, setRequests] = useState<RequestDto[]>([])
@@ -140,7 +140,7 @@ export function useSolicitacoesPage() {
     setGeneratingPdfId(id)
     try {
       const data = await withdrawalSlipApi.getWithdrawalSlip(id, token)
-      const blob = await pdf(<WithdrawalSlipDocument data={data} />).toBlob()
+      const blob = await pdf(<WithdrawalSlipDocument data={data} loggedInUserName={user?.name ?? ''} />).toBlob()
       openBlobInNewTab(blob)
       setPdfDone((prev) => ({ ...prev, [id]: true }))
     } catch (error) {

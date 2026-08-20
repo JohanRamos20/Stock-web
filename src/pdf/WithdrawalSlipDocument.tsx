@@ -220,9 +220,10 @@ const styles = StyleSheet.create({
 
 interface WithdrawalSlipDocumentProps {
   data: WithdrawalSlipDto
+  loggedInUserName: string
 }
 
-export function WithdrawalSlipDocument({ data }: WithdrawalSlipDocumentProps) {
+export function WithdrawalSlipDocument({ data, loggedInUserName }: WithdrawalSlipDocumentProps) {
   const totalUnits = data.materials.reduce((sum, material) => sum + material.quantity, 0)
 
   return (
@@ -306,7 +307,7 @@ export function WithdrawalSlipDocument({ data }: WithdrawalSlipDocumentProps) {
             </View>
             <View style={styles.sigCol}>
               <View style={styles.sigLine} />
-              <Text style={styles.sigLabel}>Assinatura do responsável pelo almoxarifado</Text>
+              <Text style={styles.sigLabel}>{loggedInUserName}</Text>
             </View>
           </View>
           <View style={styles.footerBottomRow}>
