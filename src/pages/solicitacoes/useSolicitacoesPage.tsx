@@ -6,6 +6,7 @@ import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
 import { openBlobInNewTab } from '../../lib/download'
 import { getErrorMessage } from '../../lib/http/errorMessage'
+import { usePagination } from '../../lib/usePagination'
 import { WithdrawalSlipDocument } from '../../pdf/WithdrawalSlipDocument'
 import type { RequestDto, RequestStatus } from '../../types/requests'
 import type { User } from '../../types/auth'
@@ -13,6 +14,7 @@ import type { User } from '../../types/auth'
 export type StatusFilter = 'ALL' | RequestStatus
 
 const REQUESTS_PAGE_SIZE = 200
+const REQUESTS_PER_PAGE = 10
 
 export interface RequestRowData {
   request: RequestDto
@@ -91,6 +93,13 @@ export function useSolicitacoesPage() {
       .join(' ')}`.toLowerCase()
     return haystack.includes(query)
   })
+
+  const {
+    page,
+    setPage,
+    totalPages,
+    pagedItems: pagedRows,
+  } = usePagination(filteredRows, REQUESTS_PER_PAGE, `${search}|${statusFilter}`)
 
   const registered = requests.length
   const unitsMoved = requests.reduce(
@@ -184,6 +193,10 @@ export function useSolicitacoesPage() {
     pdfNotice,
     rows,
     filteredRows,
+    pagedRows,
+    page,
+    setPage,
+    totalPages,
     registered,
     unitsMoved,
     requesters,

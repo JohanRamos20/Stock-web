@@ -1,6 +1,7 @@
 import { Alert } from '../../components/ui/Alert'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { Field } from '../../components/ui/Field'
+import { Pagination } from '../../components/ui/Pagination'
 import { RequestsKpis } from './components/RequestsKpis'
 import { RequestRow } from './components/RequestRow'
 import { useSolicitacoesPage, type StatusFilter } from './useSolicitacoesPage'
@@ -21,6 +22,10 @@ export function SolicitacoesPage() {
     pdfNotice,
     rows,
     filteredRows,
+    pagedRows,
+    page,
+    setPage,
+    totalPages,
     registered,
     unitsMoved,
     requesters,
@@ -91,7 +96,7 @@ export function SolicitacoesPage() {
 
       {!isLoading && filteredRows.length > 0 && (
         <div className="flex flex-col gap-[2px] bg-divider border-y-2 border-divider">
-          {filteredRows.map((row) => (
+          {pagedRows.map((row) => (
             <RequestRow
               key={row.request.id}
               row={row}
@@ -111,6 +116,8 @@ export function SolicitacoesPage() {
           ))}
         </div>
       )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
       <ConfirmDialog
         open={confirm !== null}

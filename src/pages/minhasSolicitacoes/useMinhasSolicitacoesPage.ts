@@ -6,9 +6,11 @@ import { ROUTES } from '../../app/paths'
 import { useAuth } from '../../data/auth/AuthContext'
 import { useCart, type CartItem } from '../../data/cart/CartContext'
 import { getErrorMessage } from '../../lib/http/errorMessage'
+import { usePagination } from '../../lib/usePagination'
 import type { RequestDto } from '../../types/requests'
 
 const REQUESTS_PAGE_SIZE = 200
+const REQUESTS_PER_PAGE = 10
 
 interface ConfirmState {
   title: string
@@ -30,6 +32,8 @@ export function useMinhasSolicitacoesPage() {
   const [message, setMessage] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
+
+  const { page, setPage, totalPages, pagedItems: pagedRequests } = usePagination(requests, REQUESTS_PER_PAGE)
 
   useEffect(() => {
     if (!token) return
@@ -126,6 +130,10 @@ export function useMinhasSolicitacoesPage() {
 
   return {
     requests,
+    pagedRequests,
+    page,
+    setPage,
+    totalPages,
     isLoading,
     loadError,
     openId,

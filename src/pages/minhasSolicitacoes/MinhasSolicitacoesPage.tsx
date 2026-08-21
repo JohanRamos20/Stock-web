@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
+import { Pagination } from '../../components/ui/Pagination'
 import { ROUTES } from '../../app/paths'
 import { MyRequestRow } from './components/MyRequestRow'
 import { useMinhasSolicitacoesPage } from './useMinhasSolicitacoesPage'
@@ -10,6 +11,10 @@ export function MinhasSolicitacoesPage() {
   const navigate = useNavigate()
   const {
     requests,
+    pagedRequests,
+    page,
+    setPage,
+    totalPages,
     isLoading,
     loadError,
     openId,
@@ -45,7 +50,7 @@ export function MinhasSolicitacoesPage() {
 
       {!isLoading && requests.length > 0 && (
         <div className="flex flex-col gap-[2px] bg-divider border-y-2 border-divider">
-          {requests.map((request) => (
+          {pagedRequests.map((request) => (
             <MyRequestRow
               key={request.id}
               request={request}
@@ -58,6 +63,8 @@ export function MinhasSolicitacoesPage() {
           ))}
         </div>
       )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
       <ConfirmDialog
         open={confirm !== null}
