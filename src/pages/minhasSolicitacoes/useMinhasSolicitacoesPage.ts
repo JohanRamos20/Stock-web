@@ -70,19 +70,21 @@ export function useMinhasSolicitacoesPage() {
   async function runEdit(request: RequestDto) {
     try {
       const catalog = await materialsApi.listMaterials(token)
-      const items: CartItem[] = request.materials.flatMap((material) => {
-        const catalogItem = catalog.find((item) => item.id === material.materialId)
-        if (!catalogItem || catalogItem.amount <= 0) return []
-        return [
-          {
-            materialId: catalogItem.id,
-            name: catalogItem.name,
-            category: catalogItem.category,
-            unitType: catalogItem.unitType,
-            amount: catalogItem.amount,
-            quantity: Math.min(material.quantity, catalogItem.amount),
-          },
-        ]
+      const items: CartItem[] = request.materials.map((material) => {
+        // Material com estoque zerado some do catálogo para não-admins (GET /materials
+        // só lista amount > 0), mesmo quando o zero é causado pela própria solicitação
+        // sendo editada — por isso a quantidade já reservada é somada de volta aqui.
+        const currentStock = catalog.find((item) => item.id === material.materialId)?.amount ?? 0
+        const effectiveAvailable = currentStock + material.quantity
+
+        return {
+          materialId: material.materialId,
+          name: material.name,
+          category: material.category,
+          unitType: material.unitType,
+          amount: effectiveAvailable,
+          quantity: Math.min(material.quantity, effectiveAvailable),
+        }
       })
       cart.startEditing(request.id, items)
       navigate(ROUTES.carrinho)
