@@ -66,7 +66,7 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
                 Editar
               </Button>
               <Button type="button" variant="ghost" disabled={isDeleting} onClick={onDelete}>
-                Excluir pedido
+                Cancelar pedido
               </Button>
             </>
           )}
@@ -75,7 +75,6 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
               Excluir pedido
             </Button>
           )}
-          {!isPending && !isSeparated && <span className="text-muted text-xs">Não editável</span>}
         </div>
       </div>
 
