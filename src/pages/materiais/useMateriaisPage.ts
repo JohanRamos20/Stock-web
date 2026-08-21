@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react'
 import * as materialsApi from '../../api/materials/materialsApi'
 import { useAuth } from '../../data/auth/AuthContext'
 import { useCart } from '../../data/cart/CartContext'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import type { Material } from '../../types/stock'
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback
-}
 
 export function useMateriaisPage() {
   const { session } = useAuth()
@@ -30,7 +27,7 @@ export function useMateriaisPage() {
         if (!cancelled) setMaterials(data)
       })
       .catch((error: unknown) => {
-        if (!cancelled) setMessage(errorMessage(error, 'Não foi possível carregar o catálogo de materiais.'))
+        if (!cancelled) setMessage(getErrorMessage(error, 'Não foi possível carregar o catálogo de materiais.'))
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false)

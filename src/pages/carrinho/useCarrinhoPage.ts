@@ -4,6 +4,7 @@ import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
 import { useCart, type CartItem } from '../../data/cart/CartContext'
 import { isAdminRole } from '../../lib/auth/role'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import type { User } from '../../types/auth'
 
 interface ConfirmState {
@@ -19,10 +20,6 @@ function unitsLabel(total: number): string {
 
 function itemsLabel(total: number): string {
   return total === 1 ? '1 item na requisição' : `${total} itens na requisição`
-}
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback
 }
 
 export function useCarrinhoPage() {
@@ -103,7 +100,11 @@ export function useCarrinhoPage() {
       setSelectedServidorId(null)
       setSent(true)
     } catch (submitError) {
-      setError(errorMessage(submitError, 'Não foi possível enviar a solicitação.'))
+      setError(
+        getErrorMessage(submitError, 'Não foi possível enviar a solicitação.', {
+          400: 'Solicitação com itens inválidos.',
+        }),
+      )
     } finally {
       setIsSubmitting(false)
     }

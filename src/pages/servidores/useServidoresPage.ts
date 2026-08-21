@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
-import { ApiError } from '../../lib/http/apiClient'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import type { ApiRole, Sector, User } from '../../types/auth'
 
 interface ServerFormState {
@@ -26,10 +26,6 @@ const EMPTY_FORM: ServerFormState = {
   siapp: '',
   sector: 'ACADEMICS',
   role: 'USER',
-}
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback
 }
 
 export function useServidoresPage() {
@@ -57,7 +53,7 @@ export function useServidoresPage() {
         if (!cancelled) setUsers(data)
       })
       .catch((error: unknown) => {
-        if (!cancelled) setMessage(errorMessage(error, 'Não foi possível carregar os servidores.'))
+        if (!cancelled) setMessage(getErrorMessage(error, 'Não foi possível carregar os servidores.'))
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false)
@@ -103,7 +99,7 @@ export function useServidoresPage() {
       setForm(EMPTY_FORM)
       setIsFormOpen(false)
     } catch (error) {
-      setMessage(errorMessage(error, 'Não foi possível cadastrar o servidor.'))
+      setMessage(getErrorMessage(error, 'Não foi possível cadastrar o servidor.'))
     }
   }
 
@@ -118,7 +114,7 @@ export function useServidoresPage() {
           await usersApi.resetUserPassword(user.id, token)
           setMessage(`Senha de ${user.name} redefinida.`)
         } catch (error) {
-          setMessage(errorMessage(error, 'Não foi possível resetar a senha.'))
+          setMessage(getErrorMessage(error, 'Não foi possível resetar a senha.'))
         } finally {
           setResettingId(null)
         }
@@ -140,11 +136,11 @@ export function useServidoresPage() {
           setUsers((prev) => prev.filter((existing) => existing.id !== user.id))
           setMessage(`Servidor removido: ${user.name}.`)
         } catch (error) {
-          if (error instanceof ApiError && error.status === 409) {
-            setMessage(`"${user.name}" possui solicitações associadas e não pode ser excluído.`)
-          } else {
-            setMessage(errorMessage(error, 'Não foi possível excluir o servidor.'))
-          }
+          setMessage(
+            getErrorMessage(error, 'Não foi possível excluir o servidor.', {
+              409: `"${user.name}" possui solicitações associadas e não pode ser excluído.`,
+            }),
+          )
         } finally {
           setDeletingId(null)
         }

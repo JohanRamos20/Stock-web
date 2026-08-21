@@ -5,6 +5,7 @@ import * as requestsApi from '../../api/requests/requestsApi'
 import { ROUTES } from '../../app/paths'
 import { useAuth } from '../../data/auth/AuthContext'
 import { useCart, type CartItem } from '../../data/cart/CartContext'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import type { RequestDto } from '../../types/requests'
 
 const REQUESTS_PAGE_SIZE = 200
@@ -14,10 +15,6 @@ interface ConfirmState {
   body: string
   actionLabel: string
   run: () => void
-}
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback
 }
 
 export function useMinhasSolicitacoesPage() {
@@ -45,7 +42,7 @@ export function useMinhasSolicitacoesPage() {
         if (!cancelled) setRequests(page.data)
       })
       .catch((error: unknown) => {
-        if (!cancelled) setLoadError(errorMessage(error, 'Não foi possível carregar suas solicitações.'))
+        if (!cancelled) setLoadError(getErrorMessage(error, 'Não foi possível carregar suas solicitações.'))
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false)
@@ -90,7 +87,7 @@ export function useMinhasSolicitacoesPage() {
       cart.startEditing(request.id, items)
       navigate(ROUTES.carrinho)
     } catch (error) {
-      setMessage(errorMessage(error, 'Não foi possível carregar os materiais para edição.'))
+      setMessage(getErrorMessage(error, 'Não foi possível carregar os materiais para edição.'))
     }
   }
 
@@ -98,7 +95,7 @@ export function useMinhasSolicitacoesPage() {
     setConfirm({
       title: 'Excluir pedido?',
       body: `A solicitação #${request.id.slice(0, 8)} será cancelada e os materiais retornam ao estoque.`,
-      actionLabel: 'Excluir pedido',
+      actionLabel: 'Cancelar pedido',
       run: () => void runDelete(request),
     })
   }
@@ -110,7 +107,7 @@ export function useMinhasSolicitacoesPage() {
       setRequests((prev) => prev.map((item) => (item.id === request.id ? { ...item, status: 'CANCELED' } : item)))
       setMessage(`Solicitação #${request.id.slice(0, 8)} excluída.`)
     } catch (error) {
-      setMessage(errorMessage(error, 'Não foi possível excluir a solicitação.'))
+      setMessage(getErrorMessage(error, 'Não foi possível excluir a solicitação.'))
     } finally {
       setDeletingId(null)
     }

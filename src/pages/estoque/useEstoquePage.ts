@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import * as materialsApi from '../../api/materials/materialsApi'
 import { useAuth } from '../../data/auth/AuthContext'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import type { Material, MaterialCategory, MaterialUnitType } from '../../types/stock'
 
 interface ItemFormState {
@@ -28,10 +29,6 @@ const EMPTY_FORM: ItemFormState = {
   unitType: 'UNITY',
 }
 
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback
-}
-
 export function useEstoquePage() {
   const { session } = useAuth()
   const token = session?.token ?? ''
@@ -55,7 +52,7 @@ export function useEstoquePage() {
         if (!cancelled) setItems(materials)
       })
       .catch((error: unknown) => {
-        if (!cancelled) setMessage(errorMessage(error, 'Não foi possível carregar o estoque.'))
+        if (!cancelled) setMessage(getErrorMessage(error, 'Não foi possível carregar o estoque.'))
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false)
@@ -106,7 +103,7 @@ export function useEstoquePage() {
           setItems((prev) => prev.filter((x) => x.id !== item.id))
           setMessage(`Item excluído: ${item.name}.`)
         } catch (error) {
-          setMessage(errorMessage(error, 'Não foi possível excluir o item.'))
+          setMessage(getErrorMessage(error, 'Não foi possível excluir o item.'))
         }
       },
     })
@@ -135,7 +132,7 @@ export function useEstoquePage() {
       setForm(EMPTY_FORM)
       setIsFormOpen(false)
     } catch (error) {
-      setMessage(errorMessage(error, 'Não foi possível salvar o item.'))
+      setMessage(getErrorMessage(error, 'Não foi possível salvar o item.'))
     }
   }
 

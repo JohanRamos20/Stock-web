@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../data/auth/AuthContext'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import type { Role } from '../../types/auth'
 import { ROUTES } from '../../app/paths'
 
@@ -25,7 +26,7 @@ export function useLoginForm() {
     setError(null)
 
     if (!identifier.trim() || !password) {
-      setError('Preencha matrícula/e-mail e senha para continuar.')
+      setError('Preencha e-mail e senha para continuar.')
       return
     }
 
@@ -36,7 +37,9 @@ export function useLoginForm() {
       const destination = state?.from?.pathname ?? ROUTES.root
       navigate(destination, { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível entrar. Tente novamente.')
+      setError(
+        getErrorMessage(err, 'Não foi possível entrar. Tente novamente.'),
+      )
     } finally {
       setIsSubmitting(false)
     }

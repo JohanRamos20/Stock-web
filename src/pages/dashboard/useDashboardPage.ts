@@ -3,16 +3,13 @@ import * as materialsApi from '../../api/materials/materialsApi'
 import * as requestsApi from '../../api/requests/requestsApi'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import { isCriticalStock } from '../../lib/stock'
 import type { Material } from '../../types/stock'
 import type { RecentRequestData } from './components/RecentRequests'
 
 const REQUESTS_PAGE_SIZE = 200
 const RECENT_REQUESTS_COUNT = 4
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback
-}
 
 export function useDashboardPage() {
   const { session } = useAuth()
@@ -64,7 +61,7 @@ export function useDashboardPage() {
         )
       })
       .catch((error: unknown) => {
-        if (!cancelled) setLoadError(errorMessage(error, 'Não foi possível carregar o painel.'))
+        if (!cancelled) setLoadError(getErrorMessage(error, 'Não foi possível carregar o painel.'))
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false)

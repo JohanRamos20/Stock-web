@@ -26,6 +26,14 @@ interface RequestOptions {
   token?: string
 }
 
+type UnauthorizedHandler = () => void
+
+let unauthorizedHandler: UnauthorizedHandler | null = null
+
+export function setUnauthorizedHandler(handler: UnauthorizedHandler | null) {
+  unauthorizedHandler = handler
+}
+
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   if (options.token) {
@@ -45,6 +53,10 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   const data: unknown = await response.json().catch(() => null)
 
   if (!response.ok) {
+    if (response.status === 401 && options.token) {
+      unauthorizedHandler?.()
+    }
+
     const body = data as ApiErrorBody | null
     throw new ApiError(
       body?.error?.message ?? 'Erro inesperado ao comunicar com o servidor.',

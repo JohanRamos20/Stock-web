@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import * as usersApi from '../../api/users/usersApi'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 
 const EMAIL_PATTERN = /.+@.+\..+/
 
@@ -57,7 +58,7 @@ export function useForgotPasswordForm({ onCancel, onSuccess }: UseForgotPassword
     }
 
     if (newPassword.length < 8) {
-      setError('A nova senha deve ter ao menos 8 caracteres.')
+      setError('A nova senha deve ter ao menos 7 caracteres.')
       return
     }
 
@@ -73,7 +74,7 @@ export function useForgotPasswordForm({ onCancel, onSuccess }: UseForgotPassword
       resetFields()
       onSuccess()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível redefinir a senha. Tente novamente.')
+      setError(getErrorMessage(err, 'Não foi possível redefinir a senha. Tente novamente.'))
     } finally {
       setIsSubmitting(false)
     }

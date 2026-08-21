@@ -5,6 +5,7 @@ import * as withdrawalSlipApi from '../../api/requests/withdrawalSlipApi'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
 import { openBlobInNewTab } from '../../lib/download'
+import { getErrorMessage } from '../../lib/http/errorMessage'
 import { WithdrawalSlipDocument } from '../../pdf/WithdrawalSlipDocument'
 import type { RequestDto, RequestStatus } from '../../types/requests'
 import type { User } from '../../types/auth'
@@ -12,10 +13,6 @@ import type { User } from '../../types/auth'
 export type StatusFilter = 'ALL' | RequestStatus
 
 const REQUESTS_PAGE_SIZE = 200
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback
-}
 
 export interface RequestRowData {
   request: RequestDto
@@ -63,7 +60,7 @@ export function useSolicitacoesPage() {
         setUsersById(new Map(users.map((user) => [user.id, user])))
       })
       .catch((error: unknown) => {
-        if (!cancelled) setLoadError(errorMessage(error, 'Não foi possível carregar as solicitações.'))
+        if (!cancelled) setLoadError(getErrorMessage(error, 'Não foi possível carregar as solicitações.'))
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false)
@@ -116,7 +113,7 @@ export function useSolicitacoesPage() {
       const updated = await requestsApi.completeRequest(id, token)
       setRequests((prev) => prev.map((request) => (request.id === id ? updated : request)))
     } catch (error) {
-      setActionError(errorMessage(error, 'Não foi possível concluir a solicitação.'))
+      setActionError(getErrorMessage(error, 'Não foi possível concluir a solicitação.'))
     } finally {
       setCompletingId(null)
     }
@@ -129,7 +126,7 @@ export function useSolicitacoesPage() {
       const updated = await requestsApi.separateRequest(id, token)
       setRequests((prev) => prev.map((request) => (request.id === id ? updated : request)))
     } catch (error) {
-      setActionError(errorMessage(error, 'Não foi possível separar os materiais.'))
+      setActionError(getErrorMessage(error, 'Não foi possível separar os materiais.'))
     } finally {
       setSeparatingId(null)
     }
@@ -144,7 +141,7 @@ export function useSolicitacoesPage() {
       openBlobInNewTab(blob)
       setPdfDone((prev) => ({ ...prev, [id]: true }))
     } catch (error) {
-      setPdfNotice(errorMessage(error, 'Não foi possível gerar o termo de retirada.'))
+      setPdfNotice(getErrorMessage(error, 'Não foi possível gerar o termo de retirada.'))
     } finally {
       setGeneratingPdfId(null)
     }
@@ -156,7 +153,7 @@ export function useSolicitacoesPage() {
       await requestsApi.cancelRequest(request.id, token)
       setRequests((prev) => prev.map((item) => (item.id === request.id ? { ...item, status: 'CANCELED' } : item)))
     } catch (error) {
-      setActionError(errorMessage(error, 'Não foi possível cancelar a solicitação.'))
+      setActionError(getErrorMessage(error, 'Não foi possível cancelar a solicitação.'))
     } finally {
       setCancelingId(null)
     }

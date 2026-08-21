@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { LoginCredentials, Session, User } from '../../types/auth'
 import { authService } from '../../api/auth'
+import { setUnauthorizedHandler } from '../../lib/http/apiClient'
 
 type AuthStatus = 'idle' | 'authenticating' | 'authenticated' | 'unauthenticated'
 
@@ -37,11 +38,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function logout() {
+  const logout = useCallback(async () => {
     await authService.logout()
     setSession(null)
     setStatus('unauthenticated')
-  }
+  }, [])
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => void logout())
+    return () => setUnauthorizedHandler(null)
+  }, [logout])
 
   return (
     <AuthContext.Provider value={{ user: session?.user ?? null, session, status, login, logout }}>
