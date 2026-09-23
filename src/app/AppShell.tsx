@@ -44,8 +44,8 @@ export function AppShell() {
     <div className="flex min-h-screen bg-bg">
       <aside className="w-[248px] flex-none bg-white border-r-2 border-divider flex flex-col">
         <div className="px-5 pt-5 pb-4 border-b-2 border-divider">
-          <div className="font-heading font-extrabold text-[17px] tracking-[-0.01em]">ALMOXARIFADO</div>
-          <div className="text-muted text-[11px] tracking-[0.1em] uppercase">Campus Central</div>
+          <div className="font-heading font-extrabold text-[17px] tracking-[-0.01em]">Stock</div>
+          <div className="text-muted text-[11px] tracking-[0.1em] uppercase">Campus Jaguaribe</div>
         </div>
 
         <div className="px-5 py-2.5 border-b-2 border-divider bg-accent-100">
@@ -84,7 +84,7 @@ export function AppShell() {
           <div className="text-[15px] tracking-[0.1em] uppercase text-accent-700">{pageTitle}</div>
           <div className="flex items-center gap-3">
             <Tag>{getRoleLabel(user.role)}</Tag>
-            <span className="text-muted text-xs">Exercício 2026 · Unidade 158/15290</span>
+            <span className="text-muted text-xs">Exercício {new Date().getFullYear()}</span>
           </div>
         </header>
 
