@@ -4,21 +4,29 @@ import { Tag } from '../components/ui/Tag'
 import { useAuth } from '../data/auth/AuthContext'
 import { useCart } from '../data/cart/CartContext'
 import { getRoleLabel, isAdminRole } from '../lib/auth/role'
+import type { Role } from '../types/auth'
 import { ROUTES } from './paths'
 
-const NAV_ITEMS = [
-  { label: 'Dashboard', to: ROUTES.dashboard, role: 'admin' },
-  { label: 'Solicitar Materiais', to: ROUTES.materiais, role: 'admin' },
-  { label: 'Solicitação de Materiais', to: ROUTES.materiais, role: 'servidor' },
-  { label: 'Solicitação', to: ROUTES.carrinho, hidden: true },
-  { label: 'Estoque', to: ROUTES.estoque, role: 'admin' },
-  { label: 'Solicitações dos servidores', to: ROUTES.solicitacoes, role: 'admin' },
-  { label: 'Registro de Servidores', to: ROUTES.servidores, role: 'admin' },
-  { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes, role: 'servidor' },
-] as const
+type NavItem = {
+  label: string
+  to: string
+  roles: readonly Role[]
+  hidden: boolean
+}
 
-function matchesRole(itemRole: 'admin' | 'servidor' | undefined, admin: boolean): boolean {
-  return !itemRole || itemRole === (admin ? 'admin' : 'servidor')
+const NAV_ITEMS: readonly NavItem[] = [
+  { label: 'Dashboard', to: ROUTES.dashboard, roles: ['admin'], hidden: false },
+  { label: 'Solicitar Materiais', to: ROUTES.materiais, roles: ['admin'], hidden: false },
+  { label: 'Solicitação de Materiais', to: ROUTES.materiais, roles: ['servidor'], hidden: false },
+  { label: 'Solicitação', to: ROUTES.carrinho, roles: ['admin', 'servidor'], hidden: true },
+  { label: 'Estoque', to: ROUTES.estoque, roles: ['admin'], hidden: false },
+  { label: 'Solicitações dos servidores', to: ROUTES.solicitacoes, roles: ['admin'], hidden: false },
+  { label: 'Registro de Servidores', to: ROUTES.servidores, roles: ['admin'], hidden: false },
+  { label: 'Minhas Solicitações', to: ROUTES.minhasSolicitacoes, roles: ['servidor'], hidden: false },
+]
+
+function matchesRole(itemRoles: readonly Role[], role: Role): boolean {
+  return itemRoles.includes(role)
 }
 
 export function AppShell() {
@@ -28,9 +36,9 @@ export function AppShell() {
 
   if (!user) return null
 
-  const admin = isAdminRole(user.role)
-  const navItems = NAV_ITEMS.filter((item) => !item.hidden && matchesRole(item.role, admin))
-  const pageTitle = NAV_ITEMS.find((item) => item.to === location.pathname && matchesRole(item.role, admin))?.label ?? ''
+  const role: Role = isAdminRole(user.role) ? 'admin' : 'servidor'
+  const navItems = NAV_ITEMS.filter((item) => !item.hidden && matchesRole(item.roles, role))
+  const pageTitle = NAV_ITEMS.find((item) => item.to === location.pathname && matchesRole(item.roles, role))?.label ?? ''
 
   return (
     <div className="flex min-h-screen bg-bg">
