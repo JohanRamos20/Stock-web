@@ -6,11 +6,12 @@ export interface WithdrawalSlipMaterialDto {
 }
 
 export interface WithdrawalSlipDto {
-  requestId: string
+  requestId: number
   requesterName: string
   sector: string
   deadline: string
   createdAt: string
   requestedByAdminName: string | null
+  observacoes: string | null
   materials: WithdrawalSlipMaterialDto[]
 }

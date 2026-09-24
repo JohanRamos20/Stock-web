@@ -1,5 +1,6 @@
 import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
 import type { WithdrawalSlipDto } from '../types/withdrawalSlip'
+import { formatRequestNumber } from '../lib/formatRequestNumber'
 import { formatUnit } from '../lib/units'
 
 const GREEN_DARK = '#1F5D3A'
@@ -170,6 +171,25 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
     color: GREEN_DARK,
   },
+  observationsBox: {
+    borderWidth: 0.75,
+    borderColor: BORDER,
+    backgroundColor: LIGHT_BG,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginTop: 14,
+  },
+  observationsLabel: {
+    fontSize: 9.5,
+    fontFamily: 'Helvetica-Bold',
+    color: GREEN_DARK,
+    marginBottom: 4,
+  },
+  observationsText: {
+    fontSize: 9.5,
+    color: GREEN_DARK,
+    lineHeight: 1.4,
+  },
 
   footer: {
     position: 'absolute',
@@ -225,9 +245,10 @@ interface WithdrawalSlipDocumentProps {
 
 export function WithdrawalSlipDocument({ data, loggedInUserName }: WithdrawalSlipDocumentProps) {
   const totalUnits = data.materials.reduce((sum, material) => sum + material.quantity, 0)
+  const requestNumber = formatRequestNumber(data.requestId)
 
   return (
-    <Document title={`Termo de Retirada de Material ${data.requestId}`}>
+    <Document title={`Termo de Retirada de Material ${requestNumber}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerRow}>
           <View style={styles.headerText}>
@@ -239,7 +260,7 @@ export function WithdrawalSlipDocument({ data, loggedInUserName }: WithdrawalSli
 
         <View style={styles.numeroBox}>
           <Text style={styles.numeroTexto}>
-            Termo de Retirada de Material Nº: <Text style={styles.numeroDestaque}>{data.requestId}</Text>
+            Termo de Retirada de Material Nº: <Text style={styles.numeroDestaque}>{requestNumber}</Text>
           </Text>
           <Text style={styles.dataTexto}>Data: {data.createdAt}</Text>
         </View>
@@ -298,6 +319,13 @@ export function WithdrawalSlipDocument({ data, loggedInUserName }: WithdrawalSli
           </Text>
         </View>
 
+        {data.observacoes?.trim() && (
+          <View style={styles.observationsBox}>
+            <Text style={styles.observationsLabel}>Observações</Text>
+            <Text style={styles.observationsText}>{data.observacoes}</Text>
+          </View>
+        )}
+
         <View style={styles.footer} fixed>
           <View style={styles.footerDivider} />
           <View style={styles.sigRow}>
@@ -312,8 +340,7 @@ export function WithdrawalSlipDocument({ data, loggedInUserName }: WithdrawalSli
           </View>
           <View style={styles.footerBottomRow}>
             <Text style={styles.auditText}>
-              Documento gerado eletronicamente pelo sistema STOCK para fins de auditoria — Solicitação{' '}
-              {data.requestId}
+              Documento gerado eletronicamente pelo sistema STOCK para fins de auditoria — Solicitação #{requestNumber}
             </Text>
             <Text
               style={styles.pageNumber}

@@ -5,6 +5,7 @@ import { useAuth } from '../../data/auth/AuthContext'
 import { useCart, type CartItem } from '../../data/cart/CartContext'
 import { isAdminRole } from '../../lib/auth/role'
 import { getErrorMessage } from '../../lib/http/errorMessage'
+import { formatRequestNumber } from '../../lib/formatRequestNumber'
 import type { User } from '../../types/auth'
 
 interface ConfirmState {
@@ -26,7 +27,17 @@ export function useCarrinhoPage() {
   const { user, session } = useAuth()
   const token = session?.token ?? ''
   const isAdmin = isAdminRole(user?.role ?? '')
-  const { items, totalUnits, editingRequestId, updateQuantity, removeItem, cancelEditing } = useCart()
+  const {
+    items,
+    observations,
+    setObservations,
+    totalUnits,
+    editingRequestId,
+    editingRequestNumber,
+    updateQuantity,
+    removeItem,
+    cancelEditing,
+  } = useCart()
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
   const [sent, setSent] = useState(false)
   const [sentMessage, setSentMessage] = useState<string | null>(null)
@@ -79,32 +90,38 @@ export function useCarrinhoPage() {
     const materialsCount = items.length
     const units = totalUnits
     const materialsPayload = items.map((item) => ({ materialId: item.materialId, quantity: item.quantity }))
+    const observacoes = observations.trim()
+    const observationsPayload = observacoes ? { observacoes } : {}
     setError(null)
     setIsSubmitting(true)
     try {
       if (editingRequestId) {
-        await requestsApi.updateRequest(editingRequestId, { materials: materialsPayload }, token)
-        setSentMessage(
-          `Solicitação #${editingRequestId.slice(0, 8)} atualizada — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Reenviada ao almoxarifado.`,
-        )
-      } else {
-        await requestsApi.createRequest(
-          { materials: materialsPayload, ...(isAdmin && selectedServidorId ? { userId: selectedServidorId } : {}) },
+        const updatedRequest = await requestsApi.updateRequest(
+          editingRequestId,
+          { materials: materialsPayload, ...observationsPayload },
           token,
         )
         setSentMessage(
-          `Solicitação enviada com sucesso — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Encaminhada ao almoxarifado.`,
+          `Solicitação #${formatRequestNumber(updatedRequest.numero)} atualizada — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Reenviada ao almoxarifado.`,
+        )
+      } else {
+        const createdRequest = await requestsApi.createRequest(
+          {
+            materials: materialsPayload,
+            ...observationsPayload,
+            ...(isAdmin && selectedServidorId ? { userId: selectedServidorId } : {}),
+          },
+          token,
+        )
+        setSentMessage(
+          `Solicitação #${formatRequestNumber(createdRequest.numero)} enviada com sucesso — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Encaminhada ao almoxarifado.`,
         )
       }
       cancelEditing()
       setSelectedServidorId(null)
       setSent(true)
     } catch (submitError) {
-      setError(
-        getErrorMessage(submitError, 'Não foi possível enviar a solicitação.', {
-          400: 'Solicitação com itens inválidos.',
-        }),
-      )
+      setError(submitError instanceof Error ? submitError.message : getErrorMessage(submitError, 'Não foi possível enviar a solicitação.'))
     } finally {
       setIsSubmitting(false)
     }
@@ -130,8 +147,11 @@ export function useCarrinhoPage() {
     selectedServidorId,
     setSelectedServidorId,
     items,
+    observations,
+    setObservations,
     totalUnits,
     editingRequestId,
+    editingRequestNumber,
     confirm,
     sent,
     sentMessage,

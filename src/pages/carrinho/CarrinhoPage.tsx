@@ -3,6 +3,7 @@ import { Button } from '../../components/ui/Button'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { SearchableSelect } from '../../components/ui/SearchableSelect'
 import { ROUTES } from '../../app/paths'
+import { formatRequestNumber } from '../../lib/formatRequestNumber'
 import { CartTable } from './components/CartTable'
 import { useCarrinhoPage } from './useCarrinhoPage'
 
@@ -15,8 +16,11 @@ export function CarrinhoPage() {
     selectedServidorId,
     setSelectedServidorId,
     items,
+    observations,
+    setObservations,
     totalUnits,
     editingRequestId,
+    editingRequestNumber,
     confirm,
     sent,
     sentMessage,
@@ -51,7 +55,7 @@ export function CarrinhoPage() {
       {!showSuccess && editingRequestId && (
         <div className="bg-accent-100 border-l-[3px] border-accent px-4 py-3 mb-5 flex items-center justify-between gap-4">
           <div className="text-[13px]">
-            Editando a solicitação #{editingRequestId.slice(0, 8)} — as alterações substituem o pedido original ao
+            Editando a solicitação #{formatRequestNumber(editingRequestNumber)} — as alterações substituem o pedido original ao
             reenviar.
           </div>
           <Button type="button" variant="secondary" onClick={handleCancelEdit}>
@@ -92,34 +96,57 @@ export function CarrinhoPage() {
               <span className="font-heading font-extrabold text-xl">{unitsLabel(totalUnits)}</span>
             </div>
 
-            <div className="flex items-end justify-between px-2 py-4 gap-4">
-              {isAdmin ? (
-                <SearchableSelect
-                  id="servidor-responsavel"
-                  label="Servidor responsável"
-                  placeholder="Buscar servidor..."
-                  options={servidores.map((servidor) => ({ value: servidor.id, label: `${servidor.name} · ${servidor.sector}` }))}
-                  value={selectedServidorId}
-                  onChange={setSelectedServidorId}
-                  wrapperClassName="w-[280px]"
+            <div className="px-2 py-4">
+              <div>
+                <label htmlFor="observacoes" className="block text-xs mb-1 text-text/70">
+                  Observações
+                </label>
+                <textarea
+                  id="observacoes"
+                  value={observations}
+                  onChange={(event) => setObservations(event.target.value)}
+                  rows={3}
+                  maxLength={1000}
+                  aria-describedby="observacoes-contador"
+                  className="w-full px-2.5 py-1.5 text-sm text-text caret-accent bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0 resize-y"
                 />
-              ) : (
-                <div>
-                  <div className="text-[11px] tracking-[0.08em] uppercase text-muted">Servidor responsável</div>
-                  <div className="text-[13px]">
-                    {user?.name} · {user?.sector}
-                  </div>
+                <div id="observacoes-contador" className="mt-1 text-right text-xs text-muted">
+                  {observations.length}/1000 caracteres
                 </div>
-              )}
-              <Button
-                type="button"
-                variant="primary"
-                className="px-5 py-3"
-                disabled={isSubmitting || (isAdmin && !selectedServidorId)}
-                onClick={() => void handleSubmit()}
-              >
-                {isSubmitting ? 'Enviando…' : editingRequestId ? 'Reenviar solicitação' : 'Solicitar'}
-              </Button>
+              </div>
+
+              <div className="mt-4">
+                {isAdmin ? (
+                  <SearchableSelect
+                    id="servidor-responsavel"
+                    label="Servidor responsável"
+                    placeholder="Buscar servidor..."
+                    options={servidores.map((servidor) => ({ value: servidor.id, label: `${servidor.name} · ${servidor.sector}` }))}
+                    value={selectedServidorId}
+                    onChange={setSelectedServidorId}
+                    wrapperClassName="w-[280px]"
+                  />
+                ) : (
+                  <div>
+                    <div className="text-[11px] tracking-[0.08em] uppercase text-muted">Servidor responsável</div>
+                    <div className="text-[13px]">
+                      {user?.name} · {user?.sector}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 flex justify-end">
+                <Button
+                  type="button"
+                  variant="primary"
+                  className="px-5 py-3"
+                  disabled={isSubmitting || (isAdmin && !selectedServidorId)}
+                  onClick={() => void handleSubmit()}
+                >
+                  {isSubmitting ? 'Enviando…' : editingRequestId ? 'Reenviar solicitação' : 'Solicitar'}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

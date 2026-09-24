@@ -6,6 +6,7 @@ import { ROUTES } from '../../app/paths'
 import { useAuth } from '../../data/auth/AuthContext'
 import { useCart, type CartItem } from '../../data/cart/CartContext'
 import { getErrorMessage } from '../../lib/http/errorMessage'
+import { formatRequestNumber } from '../../lib/formatRequestNumber'
 import { usePagination } from '../../lib/usePagination'
 import type { RequestDto } from '../../types/requests'
 
@@ -65,7 +66,7 @@ export function useMinhasSolicitacoesPage() {
   function handleEdit(request: RequestDto) {
     setConfirm({
       title: 'Editar solicitação?',
-      body: `Os materiais da solicitação #${request.id.slice(0, 8)} voltam para a tela de solicitação para você ajustar e reenviar.`,
+      body: `Os materiais da solicitação #${formatRequestNumber(request.numero)} voltam para a tela de solicitação para você ajustar e reenviar.`,
       actionLabel: 'Editar solicitação',
       run: () => void runEdit(request),
     })
@@ -90,7 +91,7 @@ export function useMinhasSolicitacoesPage() {
           quantity: Math.min(material.quantity, effectiveAvailable),
         }
       })
-      cart.startEditing(request.id, items)
+      cart.startEditing(request.id, request.numero, items, request.observacoes ?? '')
       navigate(ROUTES.carrinho)
     } catch (error) {
       setMessage(getErrorMessage(error, 'Não foi possível carregar os materiais para edição.'))
@@ -100,7 +101,7 @@ export function useMinhasSolicitacoesPage() {
   function handleDelete(request: RequestDto) {
     setConfirm({
       title: 'Excluir pedido?',
-      body: `A solicitação #${request.id.slice(0, 8)} será cancelada e os materiais retornam ao estoque.`,
+      body: `A solicitação #${formatRequestNumber(request.numero)} será cancelada e os materiais retornam ao estoque.`,
       actionLabel: 'Cancelar pedido',
       run: () => void runDelete(request),
     })
@@ -111,7 +112,7 @@ export function useMinhasSolicitacoesPage() {
     try {
       await requestsApi.cancelRequest(request.id, token)
       setRequests((prev) => prev.map((item) => (item.id === request.id ? { ...item, status: 'CANCELED' } : item)))
-      setMessage(`Solicitação #${request.id.slice(0, 8)} excluída.`)
+      setMessage(`Solicitação #${formatRequestNumber(request.numero)} excluída.`)
     } catch (error) {
       setMessage(getErrorMessage(error, 'Não foi possível excluir a solicitação.'))
     } finally {

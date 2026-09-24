@@ -2,7 +2,6 @@ import { Alert } from '../../components/ui/Alert'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { Field } from '../../components/ui/Field'
 import { Pagination } from '../../components/ui/Pagination'
-import { RequestsKpis } from './components/RequestsKpis'
 import { RequestRow } from './components/RequestRow'
 import { useSolicitacoesPage, type StatusFilter } from './useSolicitacoesPage'
 
@@ -26,9 +25,6 @@ export function SolicitacoesPage() {
     page,
     setPage,
     totalPages,
-    registered,
-    unitsMoved,
-    requesters,
     search,
     setSearch,
     statusFilter,
@@ -52,12 +48,7 @@ export function SolicitacoesPage() {
   return (
     <div>
       <div className="flex items-end justify-between gap-6 mb-5">
-        <div>
-          <h2 className="mb-1">Auditoria de solicitações</h2>
-          <p className="text-muted text-sm m-0">
-            {filteredRows.length} de {rows.length} solicitações
-          </p>
-        </div>
+        <h2 className="mb-1">Auditoria de solicitações</h2>
         <Field
           id="sbusca"
           label="Buscar"
@@ -68,7 +59,12 @@ export function SolicitacoesPage() {
         />
       </div>
 
-      <RequestsKpis registered={registered} unitsMoved={unitsMoved} requesters={requesters} />
+      <div className="bg-white border-y-2 border-divider px-4 py-3 mb-5">
+        <div className="text-[11px] tracking-[0.1em] uppercase text-muted mb-1">Solicitações</div>
+        <div className="font-heading font-extrabold text-2xl leading-none">
+          {filteredRows.length} de {rows.length} solicitações
+        </div>
+      </div>
 
       <div className="flex gap-[2px] border border-divider w-max mb-5">
         {FILTERS.map((filter) => (

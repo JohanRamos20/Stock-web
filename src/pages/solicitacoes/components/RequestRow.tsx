@@ -1,6 +1,7 @@
 import { Alert } from '../../../components/ui/Alert'
 import { Button } from '../../../components/ui/Button'
 import { Tag } from '../../../components/ui/Tag'
+import { formatRequestNumber } from '../../../lib/formatRequestNumber'
 import { REQUEST_STATUS_LABELS, REQUEST_STATUS_TAG_VARIANT } from '../../../types/requests'
 import type { RequestRowData } from '../useSolicitacoesPage'
 
@@ -52,9 +53,11 @@ export function RequestRow({
     <div className="bg-white">
       <div
         className="grid gap-4 items-center px-5 py-4"
-        style={{ gridTemplateColumns: '110px 1.4fr 1fr 150px 90px 120px' }}
+        style={{ gridTemplateColumns: '170px 1.4fr 1fr 150px 90px 120px' }}
       >
-        <div className="font-heading font-extrabold text-[15px] tabular-nums">#{request.id.slice(0, 8)}</div>
+        <div className="font-heading font-extrabold text-[15px] tabular-nums">
+          Solicitação #{formatRequestNumber(request.numero)}
+        </div>
         <div>
           <div className="font-semibold text-sm">{requesterName}</div>
           <div className="text-muted text-xs">{requesterSector}</div>
@@ -101,6 +104,13 @@ export function RequestRow({
               ))}
             </tbody>
           </table>
+
+          {request.observacoes?.trim() && (
+            <div>
+              <div className="text-[11px] tracking-[0.08em] uppercase text-muted mb-1">Observações</div>
+              <p className="m-0 text-sm whitespace-pre-wrap">{request.observacoes}</p>
+            </div>
+          )}
 
           {isPending && (
             <div className="border-t-2 border-divider pt-4 flex items-center justify-between gap-6">

@@ -6,6 +6,7 @@ import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
 import { openBlobInNewTab } from '../../lib/download'
 import { getErrorMessage } from '../../lib/http/errorMessage'
+import { formatRequestNumber } from '../../lib/formatRequestNumber'
 import { usePagination } from '../../lib/usePagination'
 import { WithdrawalSlipDocument } from '../../pdf/WithdrawalSlipDocument'
 import type { RequestDto, RequestStatus } from '../../types/requests'
@@ -101,13 +102,6 @@ export function useSolicitacoesPage() {
     pagedItems: pagedRows,
   } = usePagination(filteredRows, REQUESTS_PER_PAGE, `${search}|${statusFilter}`)
 
-  const registered = requests.length
-  const unitsMoved = requests.reduce(
-    (sum, request) => sum + request.materials.reduce((materialSum, material) => materialSum + material.quantity, 0),
-    0,
-  )
-  const requesters = new Set(requests.map((request) => request.userId)).size
-
   function toggleExpand(id: string) {
     setOpenId((prev) => (prev === id ? null : id))
     setPdfNotice(null)
@@ -171,7 +165,7 @@ export function useSolicitacoesPage() {
   function handleCancelRequest(request: RequestDto) {
     setConfirm({
       title: 'Cancelar solicitação?',
-      body: `Os materiais da solicitação #${request.id.slice(0, 8)} retornam ao estoque. Esta ação não pode ser desfeita.`,
+      body: `Os materiais da solicitação #${formatRequestNumber(request.numero)} retornam ao estoque. Esta ação não pode ser desfeita.`,
       actionLabel: 'Cancelar solicitação',
       run: () => void runCancel(request),
     })
@@ -197,9 +191,6 @@ export function useSolicitacoesPage() {
     page,
     setPage,
     totalPages,
-    registered,
-    unitsMoved,
-    requesters,
     search,
     setSearch,
     statusFilter,

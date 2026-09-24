@@ -12,14 +12,17 @@ export interface CartItem {
 
 interface CartContextValue {
   items: CartItem[]
+  observations: string
   count: number
   totalUnits: number
   editingRequestId: string | null
+  editingRequestNumber: number | null
   addItem: (material: Material, quantity: number) => void
+  setObservations: (observations: string) => void
   updateQuantity: (materialId: string, quantity: number) => void
   removeItem: (materialId: string) => void
   clear: () => void
-  startEditing: (requestId: string, items: CartItem[]) => void
+  startEditing: (requestId: string, requestNumber: number, items: CartItem[], observations: string) => void
   cancelEditing: () => void
 }
 
@@ -31,7 +34,9 @@ function clamp(quantity: number, amount: number): number {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [observations, setObservations] = useState('')
   const [editingRequestId, setEditingRequestId] = useState<string | null>(null)
+  const [editingRequestNumber, setEditingRequestNumber] = useState<number | null>(null)
 
   function addItem(material: Material, quantity: number) {
     setItems((prev) => {
@@ -66,16 +71,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function clear() {
     setItems([])
+    setObservations('')
   }
 
-  function startEditing(requestId: string, editItems: CartItem[]) {
+  function startEditing(requestId: string, requestNumber: number, editItems: CartItem[], editObservations: string) {
     setItems(editItems)
+    setObservations(editObservations)
     setEditingRequestId(requestId)
+    setEditingRequestNumber(requestNumber)
   }
 
   function cancelEditing() {
     setItems([])
+    setObservations('')
     setEditingRequestId(null)
+    setEditingRequestNumber(null)
   }
 
   const count = items.length
@@ -85,10 +95,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     <CartContext.Provider
       value={{
         items,
+        observations,
         count,
         totalUnits,
         editingRequestId,
+        editingRequestNumber,
         addItem,
+        setObservations,
         updateQuantity,
         removeItem,
         clear,

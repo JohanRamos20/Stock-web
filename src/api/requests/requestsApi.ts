@@ -4,6 +4,7 @@ import type { PaginatedRequestsDto, RequestDto } from '../../types/requests'
 interface CreateRequestPayload {
   materials: { materialId: string; quantity: number }[]
   userId?: string
+  observacoes?: string
 }
 
 export function createRequest(payload: CreateRequestPayload, token: string): Promise<RequestDto> {
@@ -28,6 +29,7 @@ export function listMyRequests(params: { page: number; limit: number }, token: s
 
 interface UpdateRequestPayload {
   materials: { materialId: string; quantity: number }[]
+  observacoes?: string
 }
 
 export function updateRequest(id: string, payload: UpdateRequestPayload, token: string): Promise<RequestDto> {

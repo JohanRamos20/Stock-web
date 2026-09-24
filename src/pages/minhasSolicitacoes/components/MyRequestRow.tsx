@@ -1,5 +1,6 @@
 import { Button } from '../../../components/ui/Button'
 import { Tag } from '../../../components/ui/Tag'
+import { formatRequestNumber } from '../../../lib/formatRequestNumber'
 import { REQUEST_STATUS_LABELS, REQUEST_STATUS_TAG_VARIANT } from '../../../types/requests'
 import type { RequestDto } from '../../../types/requests'
 
@@ -42,9 +43,11 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
     <div className="bg-white">
       <div
         className="grid gap-4 items-center px-5 py-4"
-        style={{ gridTemplateColumns: '130px 1.6fr 1fr 130px 220px' }}
+        style={{ gridTemplateColumns: '170px 1.6fr 1fr 130px 220px' }}
       >
-        <div className="font-heading font-extrabold text-[15px] tabular-nums">#{request.id.slice(0, 8)}</div>
+        <div className="font-heading font-extrabold text-[15px] tabular-nums">
+          Solicitação #{formatRequestNumber(request.numero)}
+        </div>
         <div>
           <div className="text-[13px]">{situacaoText(request)}</div>
           <div className="text-muted text-xs">
@@ -100,6 +103,13 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
               ))}
             </tbody>
           </table>
+
+          {request.observacoes?.trim() && (
+            <div>
+              <div className="text-[11px] tracking-[0.08em] uppercase text-muted mb-1">Observações</div>
+              <p className="m-0 text-sm whitespace-pre-wrap">{request.observacoes}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
