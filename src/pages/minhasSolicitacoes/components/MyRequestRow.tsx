@@ -107,7 +107,7 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
           {request.observacoes?.trim() && (
             <div>
               <div className="text-[11px] tracking-[0.08em] uppercase text-muted mb-1">Observações</div>
-              <p className="m-0 text-sm whitespace-pre-wrap">{request.observacoes}</p>
+              <p className="m-0 text-sm whitespace-pre-wrap break-words">{request.observacoes}</p>
             </div>
           )}
         </div>

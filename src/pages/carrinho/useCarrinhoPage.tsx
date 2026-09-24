@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
+import { pdf } from '@react-pdf/renderer'
 import * as requestsApi from '../../api/requests/requestsApi'
+import * as withdrawalSlipApi from '../../api/requests/withdrawalSlipApi'
 import * as usersApi from '../../api/users/usersApi'
 import { useAuth } from '../../data/auth/AuthContext'
 import { useCart, type CartItem } from '../../data/cart/CartContext'
 import { isAdminRole } from '../../lib/auth/role'
+import { downloadBlob } from '../../lib/download'
 import { getErrorMessage } from '../../lib/http/errorMessage'
 import { formatRequestNumber } from '../../lib/formatRequestNumber'
+import { WithdrawalSlipDocument } from '../../pdf/WithdrawalSlipDocument'
 import type { User } from '../../types/auth'
 
 interface ConfirmState {
@@ -113,9 +117,22 @@ export function useCarrinhoPage() {
           },
           token,
         )
-        setSentMessage(
-          `Solicitação #${formatRequestNumber(createdRequest.numero)} enviada com sucesso — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}. Encaminhada ao almoxarifado.`,
-        )
+        const requestMessage = `Solicitação #${formatRequestNumber(createdRequest.numero)} enviada com sucesso — ${materialsCount} ${materialsCount === 1 ? 'material' : 'materiais'}, ${units} ${units === 1 ? 'unidade' : 'unidades'}.`
+
+        if (isAdmin && selectedServidorId) {
+          try {
+            const withdrawalSlip = await withdrawalSlipApi.getWithdrawalSlip(createdRequest.id, token)
+            const blob = await pdf(<WithdrawalSlipDocument data={withdrawalSlip} loggedInUserName={user?.name ?? ''} />).toBlob()
+            downloadBlob(blob, `termo-retirada-solicitacao-${formatRequestNumber(createdRequest.numero)}.pdf`)
+            setSentMessage(`${requestMessage} O download do termo de retirada foi iniciado.`)
+          } catch (downloadError) {
+            setSentMessage(
+              `${requestMessage} A solicitação foi criada, mas não foi possível baixar o termo: ${getErrorMessage(downloadError, 'erro inesperado.')}`,
+            )
+          }
+        } else {
+          setSentMessage(`${requestMessage} Encaminhada ao almoxarifado.`)
+        }
       }
       cancelEditing()
       setSelectedServidorId(null)

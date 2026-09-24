@@ -12,6 +12,13 @@ const BORDER = '#D7E4DB'
 const MARGIN = 54
 const FOOTER_HEIGHT = 130
 
+function wrapLongWords(text: string): string {
+  return text
+    .split(/(\s+)/)
+    .map((part) => (/^\s+$/.test(part) ? part : (part.match(/.{1,50}/g) ?? [part]).join('\n')))
+    .join('')
+}
+
 const styles = StyleSheet.create({
   page: {
     padding: MARGIN,
@@ -322,7 +329,7 @@ export function WithdrawalSlipDocument({ data, loggedInUserName }: WithdrawalSli
         {data.observacoes?.trim() && (
           <View style={styles.observationsBox}>
             <Text style={styles.observationsLabel}>Observações</Text>
-            <Text style={styles.observationsText}>{data.observacoes}</Text>
+            <Text style={styles.observationsText}>{wrapLongWords(data.observacoes)}</Text>
           </View>
         )}
 

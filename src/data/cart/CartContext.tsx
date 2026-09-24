@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useAuth } from '../auth/AuthContext'
 import type { Material, MaterialCategory, MaterialUnitType } from '../../types/stock'
 
 export interface CartItem {
@@ -33,10 +34,18 @@ function clamp(quantity: number, amount: number): number {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
   const [items, setItems] = useState<CartItem[]>([])
   const [observations, setObservations] = useState('')
   const [editingRequestId, setEditingRequestId] = useState<string | null>(null)
   const [editingRequestNumber, setEditingRequestNumber] = useState<number | null>(null)
+
+  useEffect(() => {
+    setItems([])
+    setObservations('')
+    setEditingRequestId(null)
+    setEditingRequestNumber(null)
+  }, [user?.id])
 
   function addItem(material: Material, quantity: number) {
     setItems((prev) => {
