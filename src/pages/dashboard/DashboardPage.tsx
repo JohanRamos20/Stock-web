@@ -36,7 +36,7 @@ export function DashboardPage() {
             openRequests={openRequests}
           />
 
-          <div className="grid gap-8 items-start mt-8" style={{ gridTemplateColumns: '1.35fr 1fr' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-8 items-start mt-8">
             <ReposicaoNecessaria items={criticalItems} onViewStock={() => navigate(ROUTES.estoque)} />
             <RecentRequests requests={recentRequests} onAudit={() => navigate(ROUTES.solicitacoes)} />
           </div>

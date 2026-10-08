@@ -66,18 +66,18 @@ export function SearchableSelect({
         onKeyDown={(event) => {
           if (event.key === 'Escape') setIsOpen(false)
         }}
-        className="w-full min-h-9 px-2.5 py-1.5 text-sm text-text caret-accent bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
+        className="w-full min-h-10 md:min-h-9 px-2.5 py-1.5 text-base md:text-sm text-text caret-accent bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
       />
 
       {isOpen && (
-        <ul className="absolute z-10 mt-1 w-full max-h-52 overflow-y-auto bg-white border border-divider shadow-md">
-          {filtered.length === 0 && <li className="px-2.5 py-2 text-sm text-muted">Nenhum servidor encontrado</li>}
+          <ul className="absolute z-10 mt-1 w-full max-h-52 overflow-y-auto bg-white border border-divider shadow-md">
+            {filtered.length === 0 && <li className="px-2.5 py-2 text-base md:text-sm text-muted">Nenhum servidor encontrado</li>}
           {filtered.map((option) => (
             <li key={option.value}>
               <button
                 type="button"
                 onClick={() => handleSelect(option)}
-                className="w-full text-left px-2.5 py-2 text-sm hover:bg-accent/10 cursor-pointer border-0 bg-transparent"
+                className="w-full text-left px-2.5 py-2 text-base md:text-sm hover:bg-accent/10 cursor-pointer border-0 bg-transparent"
               >
                 {option.label}
               </button>

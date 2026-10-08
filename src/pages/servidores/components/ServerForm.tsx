@@ -80,11 +80,11 @@ export function ServerForm({ form, setForm, onSubmit, onClear }: ServerFormProps
           onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
         />
 
-        <div className="flex gap-2 mt-1">
-          <Button type="submit" variant="primary">
+        <div className="flex flex-col sm:flex-row gap-2 mt-1">
+          <Button type="submit" variant="primary" className="w-full sm:w-auto">
             Cadastrar
           </Button>
-          <Button type="button" variant="secondary" onClick={onClear}>
+          <Button type="button" variant="secondary" className="w-full sm:w-auto" onClick={onClear}>
             Limpar
           </Button>
         </div>

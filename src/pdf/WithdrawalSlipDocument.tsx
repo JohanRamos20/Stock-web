@@ -10,7 +10,7 @@ const GRAY_TEXT = '#5B6472'
 const BORDER = '#D7E4DB'
 
 const MARGIN = 54
-const FOOTER_HEIGHT = 130
+const FOOTER_HEIGHT = 110
 
 function wrapLongWords(text: string): string {
   return text
@@ -255,7 +255,7 @@ export function WithdrawalSlipDocument({ data, loggedInUserName }: WithdrawalSli
   const requestNumber = formatRequestNumber(data.requestId)
 
   return (
-    <Document title={`Termo de Retirada de Material ${requestNumber}`}>
+    <Document title={`termo-retirada-solicitacao-${requestNumber}.pdf`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerRow}>
           <View style={styles.headerText}>

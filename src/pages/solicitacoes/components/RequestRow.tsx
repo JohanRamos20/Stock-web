@@ -51,14 +51,11 @@ export function RequestRow({
 
   return (
     <div className="bg-white">
-      <div
-        className="grid gap-4 items-center px-5 py-4"
-        style={{ gridTemplateColumns: '170px 1.4fr 1fr 150px 90px 120px' }}
-      >
-        <div className="font-heading font-extrabold text-[15px] tabular-nums">
+      <div className="grid grid-cols-2 lg:grid-cols-[170px_1.4fr_1fr_150px_90px_120px] gap-x-4 gap-y-3 items-center px-4 sm:px-5 py-4">
+        <div className="col-span-2 lg:col-span-1 font-heading font-extrabold text-[15px] tabular-nums">
           Solicitação #{formatRequestNumber(request.numero)}
         </div>
-        <div>
+        <div className="col-span-2 lg:col-span-1 min-w-0">
           <div className="font-semibold text-sm">{requesterName}</div>
           <div className="text-muted text-xs">{requesterSector}</div>
         </div>
@@ -70,21 +67,21 @@ export function RequestRow({
         <div>
           <Tag variant={REQUEST_STATUS_TAG_VARIANT[request.status]}>{REQUEST_STATUS_LABELS[request.status]}</Tag>
         </div>
-        <div className="text-right">
-          <Button type="button" variant="ghost" onClick={onToggle}>
+        <div className="col-span-2 lg:col-span-1 text-left lg:text-right">
+          <Button type="button" variant="ghost" className="px-0 lg:px-1" onClick={onToggle}>
             {isOpen ? 'Ocultar itens' : 'Ver itens'}
           </Button>
         </div>
       </div>
 
       {isOpen && (
-        <div className="border-t border-divider bg-accent-100 px-5 py-4 flex flex-col gap-4">
+          <div className="border-t border-divider bg-accent-100 px-4 sm:px-5 py-4 flex flex-col gap-4">
           <div className="text-[12px] text-muted">
             Retirada registrada: {request.status === 'COMPLETED' ? formatDateTime(request.updatedAt) : '—'}
             {request.status === 'COMPLETED' && ` · Concluído por: ${completedByName ?? '—'}`}
           </div>
 
-          <table className="w-full border-collapse text-sm bg-white">
+          <table className="hidden md:table w-full border-collapse text-sm bg-white">
             <thead>
               <tr>
                 <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-3 py-2 border-b-2 border-divider">
@@ -105,6 +102,15 @@ export function RequestRow({
             </tbody>
           </table>
 
+          <div className="md:hidden flex flex-col gap-2">
+            {request.materials.map((material) => (
+              <div key={material.materialId} className="bg-white border border-divider px-3 py-2 flex items-start justify-between gap-3">
+                <span className="font-semibold text-sm break-words">{material.name}</span>
+                <span className="text-muted text-sm tabular-nums flex-none">{material.quantity}</span>
+              </div>
+            ))}
+          </div>
+
           {request.observacoes?.trim() && (
             <div>
               <div className="text-[11px] tracking-[0.08em] uppercase text-muted mb-1">Observações</div>
@@ -113,23 +119,24 @@ export function RequestRow({
           )}
 
           {isPending && (
-            <div className="border-t-2 border-divider pt-4 flex items-center justify-between gap-6">
+            <div className="border-t-2 border-divider pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
               <div>
                 <div className="font-heading font-extrabold text-sm">Separação de materiais</div>
                 <p className="text-muted text-xs m-0 mt-1 max-w-[420px]">
                   Confirme que os materiais foram separados fisicamente para liberar a emissão do termo de retirada.
                 </p>
               </div>
-              <div className="flex gap-2 flex-none">
+              <div className="flex flex-col sm:flex-row gap-2 sm:flex-none">
                 <Button
                   type="button"
                   variant="danger"
+                  className="w-full sm:w-auto"
                   disabled={isCanceling || isSeparating}
                   onClick={onCancel}
                 >
                   {isCanceling ? 'Cancelando…' : 'Cancelar pedido'}
                 </Button>
-                <Button type="button" variant="primary" disabled={isSeparating || isCanceling} onClick={onSeparate}>
+                <Button type="button" variant="primary" className="w-full sm:w-auto" disabled={isSeparating || isCanceling} onClick={onSeparate}>
                   {isSeparating ? 'Separando…' : 'Separar materiais'}
                 </Button>
               </div>
@@ -137,7 +144,7 @@ export function RequestRow({
           )}
 
           {isSeparated && (
-            <div className="border-t-2 border-divider pt-4 flex items-center justify-between gap-6">
+            <div className="border-t-2 border-divider pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
               <div>
                 <div className="font-heading font-extrabold text-sm">Termo de retirada</div>
                 <p className="text-muted text-xs m-0 mt-1 max-w-[420px]">
@@ -151,21 +158,23 @@ export function RequestRow({
                   </div>
                 )}
               </div>
-              <div className="flex gap-2 flex-none">
+              <div className="flex flex-col sm:flex-row gap-2 sm:flex-none">
                 <Button
                   type="button"
                   variant="danger"
+                  className="w-full sm:w-auto"
                   disabled={isCanceling || isCompleting || isGeneratingPdf}
                   onClick={onCancel}
                 >
                   {isCanceling ? 'Cancelando…' : 'Cancelar pedido'}
                 </Button>
-                <Button type="button" variant="secondary" disabled={isGeneratingPdf || isCanceling} onClick={onGeneratePdf}>
+                <Button type="button" variant="secondary" className="w-full sm:w-auto" disabled={isGeneratingPdf || isCanceling} onClick={onGeneratePdf}>
                   {isGeneratingPdf ? 'Gerando…' : pdfDone ? 'Abrir termo novamente' : 'Gerar PDF do termo'}
                 </Button>
                 <Button
                   type="button"
                   variant="primary"
+                  className="w-full sm:w-auto"
                   disabled={isCompleting || !pdfDone || isCanceling}
                   onClick={onComplete}
                 >

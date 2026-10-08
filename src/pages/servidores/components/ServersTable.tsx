@@ -27,7 +27,8 @@ export function ServersTable({
   }
 
   return (
-    <table className="w-full border-collapse text-sm">
+    <>
+      <table className="hidden md:table w-full border-collapse text-sm">
       <thead>
         <tr>
           <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
@@ -72,6 +73,36 @@ export function ServersTable({
           </tr>
         ))}
       </tbody>
-    </table>
+      </table>
+
+      <div className="md:hidden flex flex-col gap-2">
+        {users.map((user) => (
+          <div key={user.id} className="bg-white border-y-2 border-divider px-4 py-3">
+            <div className="font-heading font-extrabold text-sm break-words">{user.name}</div>
+            <div className="text-muted text-xs break-all mt-1">{user.email}</div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+              <Button
+                type="button"
+                variant="ghost"
+                className="px-0"
+                disabled={resettingId === user.id}
+                onClick={() => onResetPassword(user)}
+              >
+                Resetar senha
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="px-0"
+                disabled={deletingId === user.id}
+                onClick={() => onDeleteUser(user)}
+              >
+                Excluir
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }

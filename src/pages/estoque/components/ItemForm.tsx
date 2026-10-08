@@ -63,7 +63,7 @@ export function ItemForm({ form, setForm, onSubmit, onClear }: ItemFormProps) {
           onChange={(event) => setForm((prev) => ({ ...prev, location: event.target.value }))}
         />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field
             id="iqtd"
             label="Quantidade disponível"
@@ -90,11 +90,11 @@ export function ItemForm({ form, setForm, onSubmit, onClear }: ItemFormProps) {
           </Select>
         </div>
 
-        <div className="flex gap-2 mt-1">
-          <Button type="submit" variant="primary">
+        <div className="flex flex-col sm:flex-row gap-2 mt-1">
+          <Button type="submit" variant="primary" className="w-full sm:w-auto">
             {isEditing ? 'Salvar alterações' : 'Cadastrar item'}
           </Button>
-          <Button type="button" variant="secondary" onClick={onClear}>
+          <Button type="button" variant="secondary" className="w-full sm:w-auto" onClick={onClear}>
             Limpar
           </Button>
         </div>

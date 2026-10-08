@@ -19,50 +19,78 @@ export function MaterialsCatalogTable({ materials, isLoading, qty, onQtyChange, 
   }
 
   return (
-    <table className="w-full border-collapse text-sm">
-      <thead>
-        <tr>
-          <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
-            Material
-          </th>
-          <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
-            Categoria
-          </th>
-          <th className="w-[140px] text-right text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
-            Qtd. disponível
-          </th>
-          <th className="w-[190px] text-right text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
-            Solicitar
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {materials.map((material) => (
-          <tr key={material.id} className="hover:bg-text/4">
-            <td className="font-semibold px-2 py-2 border-b border-divider">{material.name}</td>
-            <td className="text-muted px-2 py-2 border-b border-divider">{CATEGORY_LABELS[material.category]}</td>
-            <td className="text-right tabular-nums px-2 py-2 border-b border-divider">
-              {material.amount} {UNIT_TYPE_LABELS[material.unitType]}
-            </td>
-            <td className="px-2 py-2 border-b border-divider">
-              <div className="flex justify-end gap-2">
-                <input
-                  type="number"
-                  min={1}
-                  max={material.amount}
-                  placeholder="1"
-                  value={qty[material.id] ?? ''}
-                  onChange={(event) => onQtyChange(material.id, event.target.value)}
-                  className="w-[66px] min-h-9 px-2 py-1.5 text-sm text-right text-text bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
-                />
-                <Button type="button" variant="primary" onClick={() => onAdd(material)}>
-                  Adicionar
-                </Button>
-              </div>
-            </td>
+    <>
+      <table className="hidden md:table w-full border-collapse text-sm">
+        <thead>
+          <tr>
+            <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
+              Material
+            </th>
+            <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
+              Categoria
+            </th>
+            <th className="w-[140px] text-right text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
+              Qtd. disponível
+            </th>
+            <th className="w-[190px] text-right text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
+              Solicitar
+            </th>
           </tr>
+        </thead>
+        <tbody>
+          {materials.map((material) => (
+            <tr key={material.id} className="hover:bg-text/4">
+              <td className="font-semibold px-2 py-2 border-b border-divider break-words">{material.name}</td>
+              <td className="text-muted px-2 py-2 border-b border-divider">{CATEGORY_LABELS[material.category]}</td>
+              <td className="text-right tabular-nums px-2 py-2 border-b border-divider">
+                {material.amount} {UNIT_TYPE_LABELS[material.unitType]}
+              </td>
+              <td className="px-2 py-2 border-b border-divider">
+                <div className="flex justify-end gap-2">
+                  <input
+                    type="number"
+                    min={1}
+                    max={material.amount}
+                    placeholder="1"
+                    value={qty[material.id] ?? ''}
+                    onChange={(event) => onQtyChange(material.id, event.target.value)}
+                    className="w-[66px] min-h-9 px-2 py-1.5 text-sm text-right text-text bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
+                  />
+                  <Button type="button" variant="primary" onClick={() => onAdd(material)}>
+                    Adicionar
+                  </Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="md:hidden flex flex-col gap-2">
+        {materials.map((material) => (
+          <div key={material.id} className="bg-white border-y-2 border-divider px-4 py-3">
+            <div className="font-heading font-extrabold text-sm break-words">{material.name}</div>
+            <div className="text-muted text-xs mt-1">
+              Disponível: {material.amount} {UNIT_TYPE_LABELS[material.unitType]}
+            </div>
+            <div className="flex items-center gap-2 mt-3">
+              <input
+                type="number"
+                min={1}
+                max={material.amount}
+                aria-label={`Quantidade de ${material.name}`}
+                placeholder="1"
+                value={qty[material.id] ?? ''}
+                onChange={(event) => onQtyChange(material.id, event.target.value)}
+                className="w-20 min-h-10 px-2 py-1.5 text-base text-right text-text bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
+              />
+              <Button type="button" variant="primary" className="flex-1" onClick={() => onAdd(material)}>
+                Adicionar
+              </Button>
+            </div>
+          </div>
         ))}
-      </tbody>
-    </table>
+      </div>
+    </>
   )
 }

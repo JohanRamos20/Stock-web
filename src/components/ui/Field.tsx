@@ -15,7 +15,7 @@ export function Field({ id, label, wrapperClassName = '', className = '', ...pro
       <input
         id={id}
         {...props}
-        className={`w-full min-h-9 px-2.5 py-1.5 text-sm text-text caret-accent bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0 ${className}`}
+        className={`w-full min-h-10 md:min-h-9 px-2.5 py-1.5 text-base md:text-sm text-text caret-accent bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0 ${className}`}
       />
     </div>
   )

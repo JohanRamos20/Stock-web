@@ -53,12 +53,12 @@ export function CarrinhoPage() {
       )}
 
       {!showSuccess && editingRequestId && (
-        <div className="bg-accent-100 border-l-[3px] border-accent px-4 py-3 mb-5 flex items-center justify-between gap-4">
+        <div className="bg-accent-100 border-l-[3px] border-accent px-4 py-3 mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="text-[13px]">
             Editando a solicitação #{formatRequestNumber(editingRequestNumber)} — as alterações substituem o pedido original ao
             reenviar.
           </div>
-          <Button type="button" variant="secondary" onClick={handleCancelEdit}>
+          <Button type="button" variant="secondary" className="w-full sm:w-auto" onClick={handleCancelEdit}>
             Cancelar edição
           </Button>
         </div>
@@ -91,7 +91,7 @@ export function CarrinhoPage() {
           />
 
           <div>
-            <div className="flex items-center justify-between border-b-2 border-divider px-2 py-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 border-b-2 border-divider px-2 py-4">
               <span className="text-muted text-[13px]">{itemsLabel(items.length)}</span>
               <span className="font-heading font-extrabold text-xl">{unitsLabel(totalUnits)}</span>
             </div>
@@ -108,7 +108,7 @@ export function CarrinhoPage() {
                   rows={3}
                   maxLength={1000}
                   aria-describedby="observacoes-contador"
-                  className="w-full px-2.5 py-1.5 text-sm text-text caret-accent bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0 resize-y"
+                  className="w-full px-2.5 py-1.5 text-base md:text-sm text-text caret-accent bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0 resize-y"
                 />
                 <div id="observacoes-contador" className="mt-1 text-right text-xs text-muted">
                   {observations.length}/1000 caracteres
@@ -124,7 +124,7 @@ export function CarrinhoPage() {
                     options={servidores.map((servidor) => ({ value: servidor.id, label: `${servidor.name} · ${servidor.sector}` }))}
                     value={selectedServidorId}
                     onChange={setSelectedServidorId}
-                    wrapperClassName="w-[280px]"
+                    wrapperClassName="w-full sm:w-[280px]"
                   />
                 ) : (
                   <div>
@@ -136,11 +136,11 @@ export function CarrinhoPage() {
                 )}
               </div>
 
-              <div className="mt-4 flex justify-end">
+              <div className="mt-4 flex justify-stretch sm:justify-end">
                 <Button
                   type="button"
                   variant="primary"
-                  className="px-5 py-3"
+                  className="w-full sm:w-auto px-5 py-3"
                   disabled={isSubmitting || (isAdmin && !selectedServidorId)}
                   onClick={() => void handleSubmit()}
                 >

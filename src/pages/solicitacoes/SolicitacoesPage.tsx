@@ -47,7 +47,7 @@ export function SolicitacoesPage() {
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-6 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6 mb-5">
         <h2 className="mb-1">Auditoria de solicitações</h2>
         <Field
           id="sbusca"
@@ -55,7 +55,7 @@ export function SolicitacoesPage() {
           placeholder="Servidor ou material"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          wrapperClassName="w-[300px]"
+          wrapperClassName="w-full sm:w-[300px]"
         />
       </div>
 
@@ -66,7 +66,7 @@ export function SolicitacoesPage() {
         </div>
       </div>
 
-      <div className="flex gap-[2px] border border-divider w-max mb-5">
+      <div className="flex flex-wrap gap-[2px] border border-divider w-fit max-w-full mb-5">
         {FILTERS.map((filter) => (
           <button
             key={filter.value}

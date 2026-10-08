@@ -12,7 +12,8 @@ interface CartTableProps {
 
 export function CartTable({ items, onIncrement, onDecrement, onQuantityChange, onRemove }: CartTableProps) {
   return (
-    <table className="w-full border-collapse text-sm">
+    <>
+      <table className="hidden md:table w-full border-collapse text-sm">
       <thead>
         <tr>
           <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
@@ -47,7 +48,7 @@ export function CartTable({ items, onIncrement, onDecrement, onQuantityChange, o
                   max={item.amount}
                   value={item.quantity}
                   onChange={(event) => onQuantityChange(item, event.target.value)}
-                  className="w-16 min-h-9 px-2 py-1.5 text-sm text-center text-text bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
+                  className="w-16 min-h-10 md:min-h-9 px-2 py-1.5 text-base md:text-sm text-center text-text bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
                 />
                 <Button
                   type="button"
@@ -70,6 +71,38 @@ export function CartTable({ items, onIncrement, onDecrement, onQuantityChange, o
           </tr>
         ))}
       </tbody>
-    </table>
+      </table>
+
+      <div className="md:hidden flex flex-col gap-2">
+        {items.map((item) => (
+          <div key={item.materialId} className="bg-white border-y-2 border-divider px-4 py-3">
+            <div className="font-heading font-extrabold text-sm break-words">{item.name}</div>
+            <div className="text-muted text-xs mt-1">
+              Disponível: {item.amount} {UNIT_TYPE_LABELS[item.unitType]}
+            </div>
+            <div className="flex items-center gap-2 mt-3">
+              <Button type="button" variant="secondary" className="w-10 h-10 p-0" onClick={() => onDecrement(item)}>
+                −
+              </Button>
+              <input
+                type="number"
+                min={1}
+                max={item.amount}
+                aria-label={`Quantidade de ${item.name}`}
+                value={item.quantity}
+                onChange={(event) => onQuantityChange(item, event.target.value)}
+                className="w-20 min-h-10 px-2 py-1.5 text-base text-center text-text bg-surface border border-divider hover:border-text/45 focus-visible:border-accent focus-visible:outline-offset-0"
+              />
+              <Button type="button" variant="secondary" className="w-10 h-10 p-0" onClick={() => onIncrement(item)}>
+                +
+              </Button>
+              <Button type="button" variant="ghost" className="ml-auto px-0" onClick={() => onRemove(item)}>
+                Remover
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }

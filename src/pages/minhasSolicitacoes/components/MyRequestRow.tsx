@@ -41,14 +41,11 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
 
   return (
     <div className="bg-white">
-      <div
-        className="grid gap-4 items-center px-5 py-4"
-        style={{ gridTemplateColumns: '170px 1.6fr 1fr 130px 220px' }}
-      >
-        <div className="font-heading font-extrabold text-[15px] tabular-nums">
+      <div className="grid grid-cols-2 lg:grid-cols-[170px_1.6fr_1fr_130px_220px] gap-x-4 gap-y-3 items-center px-4 sm:px-5 py-4">
+        <div className="col-span-2 lg:col-span-1 font-heading font-extrabold text-[15px] tabular-nums">
           Solicitação #{formatRequestNumber(request.numero)}
         </div>
-        <div>
+        <div className="col-span-2 lg:col-span-1 min-w-0">
           <div className="text-[13px]">{situacaoText(request)}</div>
           <div className="text-muted text-xs">
             {request.materials.length} {request.materials.length === 1 ? 'material' : 'materiais'} · {totalUnits}{' '}
@@ -59,8 +56,8 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
         <div>
           <Tag variant={REQUEST_STATUS_TAG_VARIANT[request.status]}>{REQUEST_STATUS_LABELS[request.status]}</Tag>
         </div>
-        <div className="text-right flex items-center justify-end gap-2">
-          <Button type="button" variant="ghost" onClick={onToggle}>
+        <div className="col-span-2 lg:col-span-1 text-left lg:text-right flex flex-wrap items-center justify-start lg:justify-end gap-x-3 gap-y-1">
+          <Button type="button" variant="ghost" className="px-0 lg:px-1" onClick={onToggle}>
             {isOpen ? 'Ocultar itens' : 'Ver itens'}
           </Button>
           {isPending && (
@@ -82,8 +79,8 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
       </div>
 
       {isOpen && (
-        <div className="border-t border-divider bg-accent-100 px-5 py-4 flex flex-col gap-4">
-          <table className="w-full border-collapse text-sm bg-white">
+          <div className="border-t border-divider bg-accent-100 px-4 sm:px-5 py-4 flex flex-col gap-4">
+          <table className="hidden md:table w-full border-collapse text-sm bg-white">
             <thead>
               <tr>
                 <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-3 py-2 border-b-2 border-divider">
@@ -103,6 +100,15 @@ export function MyRequestRow({ request, isOpen, onToggle, onEdit, onDelete, isDe
               ))}
             </tbody>
           </table>
+
+          <div className="md:hidden flex flex-col gap-2">
+            {request.materials.map((material) => (
+              <div key={material.materialId} className="bg-white border border-divider px-3 py-2 flex items-start justify-between gap-3">
+                <span className="font-semibold text-sm break-words">{material.name}</span>
+                <span className="text-muted text-sm tabular-nums flex-none">{material.quantity}</span>
+              </div>
+            ))}
+          </div>
 
           {request.observacoes?.trim() && (
             <div>

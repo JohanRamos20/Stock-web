@@ -18,7 +18,8 @@ export function ItemsTable({ items, isLoading, onEdit, onDelete }: ItemsTablePro
   }
 
   return (
-    <table className="w-full border-collapse text-sm">
+    <>
+      <table className="hidden md:table w-full border-collapse text-sm">
       <thead>
         <tr>
           <th className="text-left text-[11px] tracking-[0.08em] uppercase text-muted px-2 py-2 border-b-2 border-divider">
@@ -41,7 +42,7 @@ export function ItemsTable({ items, isLoading, onEdit, onDelete }: ItemsTablePro
       <tbody>
         {items.map((item) => (
           <tr key={item.id} className="hover:bg-text/4">
-            <td className="font-semibold px-2 py-2 border-b border-divider">{item.name}</td>
+            <td className="font-semibold px-2 py-2 border-b border-divider break-words">{item.name}</td>
             <td className="text-muted px-2 py-2 border-b border-divider">{CATEGORY_LABELS[item.category]}</td>
             <td className="text-muted px-2 py-2 border-b border-divider">{item.location}</td>
             <td className="text-right tabular-nums px-2 py-2 border-b border-divider">
@@ -60,6 +61,26 @@ export function ItemsTable({ items, isLoading, onEdit, onDelete }: ItemsTablePro
           </tr>
         ))}
       </tbody>
-    </table>
+      </table>
+
+      <div className="md:hidden flex flex-col gap-2">
+        {items.map((item) => (
+          <div key={item.id} className="bg-white border-y-2 border-divider px-4 py-3">
+            <div className="font-heading font-extrabold text-sm break-words">{item.name}</div>
+            <div className="text-muted text-xs mt-1">
+              Disponível: {item.amount} {UNIT_TYPE_LABELS[item.unitType]}
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+              <Button type="button" variant="ghost" className="px-0" onClick={() => onEdit(item)}>
+                Editar
+              </Button>
+              <Button type="button" variant="ghost" className="px-0" onClick={() => onDelete(item)}>
+                Excluir
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }

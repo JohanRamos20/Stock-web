@@ -28,12 +28,12 @@ export function ServidoresPage() {
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-6 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6 mb-5">
         <div>
           <h2 className="mb-1">Registro de servidores</h2>
           <p className="text-muted text-sm m-0">{users.length} servidores habilitados a retirar material</p>
         </div>
-        <Button type="button" variant="primary" onClick={handleToggleForm}>
+        <Button type="button" variant="primary" className="w-full sm:w-auto" onClick={handleToggleForm}>
           {isFormOpen ? 'Fechar cadastro' : 'Novo servidor'}
         </Button>
       </div>
@@ -41,7 +41,7 @@ export function ServidoresPage() {
       {message && <div className="border-l-[3px] border-accent pl-3 py-2 text-[13px] mb-5">{message}</div>}
 
       {isFormOpen ? (
-        <div className="grid grid-cols-[1.6fr_1fr] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8 items-start">
           <ServersTable
             users={users}
             isLoading={isLoading}

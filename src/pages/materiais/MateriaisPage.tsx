@@ -12,23 +12,23 @@ export function MateriaisPage() {
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-6 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6 mb-5">
         <div>
           <h2 className="mb-1">Solicitação de materiais</h2>
           <p className="text-muted text-sm m-0">
             {filteredMaterials.length} de {materials.length} itens disponíveis
           </p>
         </div>
-        <div className="flex gap-3 items-end">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-end w-full sm:w-auto">
           <Field
             id="mbusca"
             label="Buscar material"
             placeholder="Nome ou categoria"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            wrapperClassName="w-[280px]"
+            wrapperClassName="w-full sm:w-[280px]"
           />
-          <Button type="button" variant="secondary" onClick={() => navigate(ROUTES.carrinho)}>
+          <Button type="button" variant="secondary" className="w-full sm:w-auto" onClick={() => navigate(ROUTES.carrinho)}>
             Ver solicitação ({cartCount})
           </Button>
         </div>

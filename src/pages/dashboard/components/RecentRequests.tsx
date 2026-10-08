@@ -19,7 +19,7 @@ interface RecentRequestsProps {
 export function RecentRequests({ requests, onAudit }: RecentRequestsProps) {
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
         <h4 className="m-0">Últimas solicitações</h4>
         <Button type="button" variant="ghost" onClick={onAudit}>
           Auditoria
@@ -31,7 +31,7 @@ export function RecentRequests({ requests, onAudit }: RecentRequestsProps) {
       ) : (
         <div className="flex flex-col gap-[2px] bg-divider border-y-2 border-divider">
           {requests.map((request) => (
-            <div key={request.id} className="bg-white px-4 py-3.5 flex items-center justify-between">
+            <div key={request.id} className="bg-white px-4 py-3.5 flex items-start sm:items-center justify-between gap-3">
               <div>
                 <div className="font-heading font-extrabold text-sm">{request.requesterName}</div>
                 <div className="text-muted text-xs">
