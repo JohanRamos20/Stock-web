@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
 import { Field } from '../../components/ui/Field'
+import { Pagination } from '../../components/ui/Pagination'
 import { ROUTES } from '../../app/paths'
 import { MaterialsCatalogTable } from './components/MaterialsCatalogTable'
 import { useMateriaisPage } from './useMateriaisPage'
 
 export function MateriaisPage() {
   const navigate = useNavigate()
-  const { materials, filteredMaterials, isLoading, message, search, setSearch, qty, handleQtyChange, handleAdd, cartCount } =
+  const { materials, total, page, setPage, totalPages, isLoading, message, search, setSearch, qty, handleQtyChange, handleAdd, cartCount } =
     useMateriaisPage()
 
   return (
@@ -16,7 +17,7 @@ export function MateriaisPage() {
         <div>
           <h2 className="mb-1">Solicitação de materiais</h2>
           <p className="text-muted text-sm m-0">
-            {filteredMaterials.length} de {materials.length} itens disponíveis
+            {materials.length} de {total} itens disponíveis
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 sm:items-end w-full sm:w-auto">
@@ -37,12 +38,13 @@ export function MateriaisPage() {
       {message && <div className="border-l-[3px] border-accent pl-3 py-2 text-[13px] mb-4">{message}</div>}
 
       <MaterialsCatalogTable
-        materials={filteredMaterials}
+        materials={materials}
         isLoading={isLoading}
         qty={qty}
         onQtyChange={handleQtyChange}
         onAdd={handleAdd}
       />
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   )
 }

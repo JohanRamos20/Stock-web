@@ -22,6 +22,13 @@ export interface User {
   role: string
 }
 
+export interface PaginatedUsersDto {
+  data: User[]
+  total: number
+  page: number
+  totalPages: number
+}
+
 export interface Session {
   user: User
   token: string

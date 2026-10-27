@@ -1,6 +1,7 @@
 import { Button } from '../../components/ui/Button'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { Field } from '../../components/ui/Field'
+import { Pagination } from '../../components/ui/Pagination'
 import { ItemForm } from './components/ItemForm'
 import { ItemsTable } from './components/ItemsTable'
 import { useEstoquePage } from './useEstoquePage'
@@ -8,10 +9,13 @@ import { useEstoquePage } from './useEstoquePage'
 export function EstoquePage() {
   const {
     items,
-    filteredItems,
+    total,
+    page,
+    setPage,
+    totalPages,
     isLoading,
     search,
-    setSearch,
+    handleSearchChange,
     isFormOpen,
     form,
     setForm,
@@ -32,7 +36,7 @@ export function EstoquePage() {
         <div>
           <h2 className="mb-1">Registro de itens</h2>
           <p className="text-muted text-sm m-0">
-            {filteredItems.length} de {items.length} itens cadastrados
+            {items.length} de {total} itens cadastrados
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 sm:items-end w-full sm:w-auto">
@@ -41,7 +45,7 @@ export function EstoquePage() {
             label="Buscar item"
             placeholder="Nome, categoria ou local"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => handleSearchChange(event.target.value)}
             wrapperClassName="w-full sm:w-[260px]"
           />
           <Button type="button" variant="primary" className="w-full sm:w-auto" onClick={handleToggleForm}>
@@ -54,12 +58,14 @@ export function EstoquePage() {
 
       {isFormOpen ? (
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8 items-start">
-          <ItemsTable items={filteredItems} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
+          <ItemsTable items={items} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
           <ItemForm form={form} setForm={setForm} onSubmit={handleSubmit} onClear={handleClearForm} />
         </div>
       ) : (
-        <ItemsTable items={filteredItems} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
+        <ItemsTable items={items} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
       )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
       <ConfirmDialog
         open={confirm !== null}

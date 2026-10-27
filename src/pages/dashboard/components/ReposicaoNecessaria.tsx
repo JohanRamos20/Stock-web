@@ -1,12 +1,16 @@
 import { Button } from '../../../components/ui/Button'
 import { UNIT_TYPE_LABELS, type Material } from '../../../types/stock'
 
+const MAX_VISIBLE_ITEMS = 10
+
 interface ReposicaoNecessariaProps {
   items: Material[]
   onViewStock: () => void
 }
 
 export function ReposicaoNecessaria({ items, onViewStock }: ReposicaoNecessariaProps) {
+  const visibleItems = items.slice(0, MAX_VISIBLE_ITEMS)
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
@@ -35,7 +39,7 @@ export function ReposicaoNecessaria({ items, onViewStock }: ReposicaoNecessariaP
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
+            {visibleItems.map((item) => (
               <tr key={item.id}>
                 <td className="font-semibold px-2 py-2 border-b border-divider">{item.name}</td>
                 <td className="text-muted px-2 py-2 border-b border-divider">{item.location}</td>
@@ -48,7 +52,7 @@ export function ReposicaoNecessaria({ items, onViewStock }: ReposicaoNecessariaP
           </table>
 
           <div className="md:hidden flex flex-col gap-2">
-            {items.map((item) => (
+            {visibleItems.map((item) => (
               <div key={item.id} className="bg-white border-y-2 border-divider px-4 py-3">
                 <div className="font-heading font-extrabold text-sm break-words">{item.name}</div>
                 <div className="text-accent-700 font-semibold text-xs tabular-nums mt-1">

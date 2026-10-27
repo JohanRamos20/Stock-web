@@ -1,5 +1,5 @@
 import { apiRequest } from '../../lib/http/apiClient'
-import type { Material, MaterialCategory, MaterialUnitType } from '../../types/stock'
+import type { Material, MaterialCategory, MaterialUnitType, PaginatedMaterialsDto } from '../../types/stock'
 
 interface MaterialPayload {
   name: string
@@ -13,6 +13,15 @@ type UpdateMaterialPayload = Partial<MaterialPayload>
 
 export function listMaterials(token: string): Promise<Material[]> {
   return apiRequest<Material[]>('/materials', { token })
+}
+
+export function listMaterialsPage(
+  params: { page: number; limit: number; q?: string },
+  token: string,
+): Promise<PaginatedMaterialsDto> {
+  const search = new URLSearchParams({ page: String(params.page), limit: String(params.limit) })
+  if (params.q) search.set('q', params.q)
+  return apiRequest<PaginatedMaterialsDto>(`/materials?${search}`, { token })
 }
 
 export function createMaterial(payload: MaterialPayload, token: string): Promise<Material> {

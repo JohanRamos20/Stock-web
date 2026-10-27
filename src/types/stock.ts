@@ -13,6 +13,13 @@ export interface Material {
   updatedAt: string
 }
 
+export interface PaginatedMaterialsDto {
+  data: Material[]
+  total: number
+  page: number
+  totalPages: number
+}
+
 export const CATEGORY_LABELS: Record<MaterialCategory, string> = {
   FERRAMENTA: 'Ferramenta',
   EPI: 'EPI',

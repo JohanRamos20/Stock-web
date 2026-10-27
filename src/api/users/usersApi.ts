@@ -1,5 +1,5 @@
 import { apiRequest } from '../../lib/http/apiClient'
-import type { ApiRole, Sector, Session, User } from '../../types/auth'
+import type { ApiRole, PaginatedUsersDto, Sector, Session, User } from '../../types/auth'
 import { mapApiUser, type ApiUser } from './usersMapper'
 
 interface LoginPayload {
@@ -45,6 +45,19 @@ export async function createUser(payload: CreateUserPayload, token: string): Pro
 export async function listUsers(token: string): Promise<User[]> {
   const apiUsers = await apiRequest<ApiUser[]>('/users', { token })
   return apiUsers.map(mapApiUser)
+}
+
+export async function listUsersPage(
+  params: { page: number; limit: number; q?: string },
+  token: string,
+): Promise<PaginatedUsersDto> {
+  const search = new URLSearchParams({ page: String(params.page), limit: String(params.limit) })
+  if (params.q) search.set('q', params.q)
+  const response = await apiRequest<{ data: ApiUser[]; total: number; page: number; totalPages: number }>(
+    `/users?${search}`,
+    { token },
+  )
+  return { ...response, data: response.data.map(mapApiUser) }
 }
 
 export function deleteUser(id: string, password: string, token: string): Promise<void> {
